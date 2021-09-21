@@ -1,0 +1,24 @@
+{
+  "minimum": [
+    "audience",
+    "coursePrerequisites",
+    "description",
+    "keywords",
+    "name",
+    "rdf:type",
+    "url"
+  ],
+  "recommended": [
+    "producer"
+  ],
+  "optional": [
+    "author",
+    "courseCode",
+    "hasCourseInstance",
+    "image",
+    "inLanguage",
+    "provider",
+    "sponsor",
+    "thumbnailUrl"
+  ]
+}

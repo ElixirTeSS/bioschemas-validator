@@ -1,0 +1,9 @@
+{
+  "@type": "Dataset",
+  "!identifier": "https://fairdomhub.org/data_files/4012",
+  "Description": "For each module, GSEA analysis was conducted by using web-tool g:profiler and only biological process (BP) were retained. Parameters for GSEA are default. ",
+  "$$name": "Gene enrichment analysis output of modules",
+  "@@url": "https://fairdomhub.org/data_files/4012",
+  "@keywords": "[132]",
+  "$name": "Gene enrichment analysis output of modules"
+}

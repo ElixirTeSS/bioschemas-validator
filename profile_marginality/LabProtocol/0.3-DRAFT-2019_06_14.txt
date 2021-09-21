@@ -1,0 +1,23 @@
+{
+  "minimum": [
+    "ChEBI:reagent",
+    "instrument",
+    "keywords",
+    "purpose",
+    "sample"
+  ],
+  "recommended": [
+    "citation",
+    "duration",
+    "hasPart",
+    "identifier",
+    "isPartOf",
+    "license",
+    "software",
+    "step"
+  ],
+  "optional": [
+    "additionalType",
+    "isBasedOn"
+  ]
+}

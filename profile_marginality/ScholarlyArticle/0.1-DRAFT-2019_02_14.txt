@@ -1,0 +1,40 @@
+{
+  "minimum": [
+    "headline",
+    "identifier"
+  ],
+  "recommended": [
+    "alternateName",
+    "author",
+    "backstory",
+    "citation",
+    "comment",
+    "dateCreated",
+    "dateModified",
+    "datePublished",
+    "hasPart",
+    "isAccessibleForFree",
+    "isBasedOn",
+    "isPartOf",
+    "keywords",
+    "license",
+    "pageEnd",
+    "pageStart",
+    "url",
+    "sdDatePublished",
+    "sdPublisher"
+  ],
+  "optional": [
+    "alternativeHeadline",
+    "articleBody",
+    "articleSection",
+    "commentCount",
+    "copyrightHolder",
+    "copyrightYear",
+    "inLanguage",
+    "pagination",
+    "sameAs",
+    "version",
+    "wordCount"
+  ]
+}

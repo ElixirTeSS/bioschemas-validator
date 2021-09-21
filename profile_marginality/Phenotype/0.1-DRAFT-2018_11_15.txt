@@ -1,0 +1,21 @@
+{
+  "minimum": [
+    "identifier",
+    "name"
+  ],
+  "recommended": [
+    "description",
+    "image",
+    "url"
+  ],
+  "optional": [
+    "additionalProperty",
+    "alternateName",
+    "anatomicalLocation",
+    "isAssociatedWith",
+    "mainEntityOfPage",
+    "sameAs",
+    "taxonomicRange",
+    "valueReference"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "minimum": [
+    "description",
+    "mainEntityOfPage",
+    "name"
+  ],
+  "recommended": [
+    "email",
+    "expertise",
+    "homeLocation",
+    "image",
+    "memberOf",
+    "orcid",
+    "worksFor"
+  ],
+  "optional": [
+    "advisor",
+    "curriculumVitae",
+    "experience",
+    "funding",
+    "interest",
+    "internatonalActivities",
+    "journalReferee",
+    "keywords",
+    "knowsLanguage",
+    "works"
+  ]
+}

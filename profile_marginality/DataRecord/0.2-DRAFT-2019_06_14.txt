@@ -1,0 +1,24 @@
+{
+  "minimum": [
+    "identifier",
+    "mainEntity"
+  ],
+  "recommended": [
+    "additionalType"
+  ],
+  "optional": [
+    "additionalProperty",
+    "citation",
+    "dateCreated",
+    "dateModified",
+    "datePublished",
+    "distribution",
+    "image",
+    "isBasedOn",
+    "isBasisFor",
+    "keywords",
+    "sameAs",
+    "seeAlso",
+    "url"
+  ]
+}

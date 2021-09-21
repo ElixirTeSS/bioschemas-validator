@@ -1,0 +1,23 @@
+{
+  "minimum": [
+    "name"
+  ],
+  "recommended": [
+    "hasPart",
+    "issn",
+    "keywords",
+    "license",
+    "publisher",
+    "url"
+  ],
+  "optional": [
+    "about",
+    "alternateName",
+    "editor",
+    "identifier",
+    "inLanguage",
+    "isAccessibleForFree",
+    "publishingPrinciples",
+    "sameAs"
+  ]
+}

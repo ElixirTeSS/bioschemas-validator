@@ -1,0 +1,41 @@
+{
+  "minimum": [
+    "contact",
+    "description",
+    "endDate",
+    "eventType",
+    "hostInstitution",
+    "location",
+    "name",
+    "rdf:type",
+    "startDate"
+  ],
+  "recommended": [
+    "accreditation",
+    "alternateName",
+    "audience",
+    "deadline",
+    "eligibility",
+    "keywords",
+    "maximumAttendeeCapacity",
+    "prerequisite",
+    "programme",
+    "topic",
+    "url"
+  ],
+  "optional": [
+    "acceptanceNotificationDate",
+    "attachment",
+    "dateModified",
+    "identifier",
+    "offers",
+    "performer",
+    "registrationStatus",
+    "review",
+    "socialMedia",
+    "sponsor",
+    "subEvent",
+    "submitter",
+    "superEvent"
+  ]
+}

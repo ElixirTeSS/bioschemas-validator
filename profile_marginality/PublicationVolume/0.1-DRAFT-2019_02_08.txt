@@ -1,0 +1,21 @@
+{
+  "minimum": [
+    "url",
+    "volumeNumber"
+  ],
+  "recommended": [
+    "hasPart",
+    "identifier",
+    "isPartOf",
+    "pageEnd",
+    "pageStart",
+    "sameAs"
+  ],
+  "optional": [
+    "about",
+    "editor",
+    "inLanguage",
+    "keywords",
+    "pagination"
+  ]
+}

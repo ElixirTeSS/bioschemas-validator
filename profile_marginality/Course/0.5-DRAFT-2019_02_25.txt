@@ -1,0 +1,29 @@
+{
+  "minimum": [
+    "description",
+    "keywords",
+    "name"
+  ],
+  "recommended": [
+    "about",
+    "coursePrerequisites",
+    "hasCourseInstance",
+    "mentions",
+    "provider",
+    "skillLevel",
+    "timeRequired",
+    "url"
+  ],
+  "optional": [
+    "alternateName",
+    "audience",
+    "courseCode",
+    "creator",
+    "dateCreated",
+    "dateModified",
+    "educationalCredentialAwarded",
+    "hasPart",
+    "image",
+    "thumbnailUrl"
+  ]
+}

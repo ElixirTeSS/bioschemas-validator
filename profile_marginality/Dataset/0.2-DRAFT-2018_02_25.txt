@@ -1,0 +1,21 @@
+{
+  "minimum": [
+    "description",
+    "identifier",
+    "keywords",
+    "name",
+    "rdf:type",
+    "url"
+  ],
+  "recommended": [
+    "citation",
+    "creator",
+    "distribution",
+    "includedInDataCatalog",
+    "license",
+    "measurementTechnique",
+    "variableMeasured",
+    "version"
+  ],
+  "optional": []
+}

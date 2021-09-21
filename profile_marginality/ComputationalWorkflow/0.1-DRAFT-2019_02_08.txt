@@ -1,0 +1,16 @@
+{
+  "minimum": [
+    "identifier",
+    "name",
+    "url"
+  ],
+  "recommended": [
+    "description",
+    "image"
+  ],
+  "optional": [
+    "accessibilityAPI",
+    "audience",
+    "sameAs"
+  ]
+}

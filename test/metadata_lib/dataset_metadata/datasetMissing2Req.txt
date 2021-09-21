@@ -1,0 +1,37 @@
+{
+  "@context": "http://schema.org",
+  "@type": "Dataset",
+  "@id": "https://fairdomhub.org/data_files/4012",
+  "name": "Gene enrichment analysis output of modules",
+  "url": "https://fairdomhub.org/data_files/4012",
+  "keywords": "",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "creator": [
+    {
+      "@type": "Person",
+      "@id": "https://fairdomhub.org/people/1909",
+      "name": "Yi Chen"
+    }
+  ],
+  "provider": [
+    {
+      "@type": [
+        "Project",
+        "Organization"
+      ],
+      "@id": "https://fairdomhub.org/projects/223",
+      "name": "Consensus Hallmark Annotation"
+    }
+  ],
+  "dateCreated": "2021-02-07 23:42:51 UTC",
+  "dateModified": "2021-02-09 10:42:39 UTC",
+  "encodingFormat": "application/x-rar",
+  "distribution": {
+    "@type": "DataDownload",
+    "contentSize": "28.2 KB",
+    "contentUrl": "https://fairdomhub.org/data_files/4012/content_blobs/10790/download",
+    "encodingFormat": "application/x-rar",
+    "name": "module enrichment results.rar",
+    "license": "https://creativecommons.org/licenses/by/4.0/"
+  }
+}

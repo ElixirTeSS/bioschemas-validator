@@ -1,0 +1,36 @@
+{
+  "minimum": [
+    "description",
+    "keywords",
+    "name"
+  ],
+  "recommended": [
+    "about",
+    "abstract",
+    "audience",
+    "author",
+    "identifier",
+    "inLanguage",
+    "learningOutcome",
+    "learningResourceType",
+    "license",
+    "mentions",
+    "skillLevel",
+    "timeRequired",
+    "url",
+    "uses"
+  ],
+  "optional": [
+    "accessibilitySummary",
+    "contributor",
+    "dateCreated",
+    "dateModified",
+    "datePublished",
+    "featuredInEvent",
+    "hasPart",
+    "isPartOf",
+    "status",
+    "translatedInto",
+    "version"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "minimum": [
+    "about",
+    "audience",
+    "genre",
+    "name",
+    "rdf:type"
+  ],
+  "recommended": [
+    "author",
+    "contributor",
+    "description",
+    "difficultyLevel",
+    "keywords",
+    "license",
+    "url"
+  ],
+  "optional": [
+    "dateCreated",
+    "dateModified",
+    "hasPart",
+    "inLanguage",
+    "isPartOf",
+    "learningResourceType",
+    "mentions",
+    "pid",
+    "review",
+    "sameAs",
+    "timeRequired",
+    "version"
+  ]
+}

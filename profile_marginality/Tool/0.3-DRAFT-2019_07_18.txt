@@ -1,0 +1,41 @@
+{
+  "minimum": [
+    "description",
+    "name",
+    "url"
+  ],
+  "recommended": [
+    "additionalType",
+    "applicationCategory",
+    "applicationSubCategory",
+    "author",
+    "citation",
+    "featureList",
+    "license",
+    "softwareVersion"
+  ],
+  "optional": [
+    "applicationSuite",
+    "codeRepository",
+    "contributor",
+    "discussionUrl",
+    "downloadUrl",
+    "funder",
+    "hasPart",
+    "identifier",
+    "inputData",
+    "inputFormat",
+    "isAccessibleForFree",
+    "isBasedOn",
+    "isPartOf",
+    "keywords",
+    "operatingSystem",
+    "outputData",
+    "outputFormat",
+    "programmingLanguage",
+    "provider",
+    "softwareAddOn",
+    "softwareHelp",
+    "thumbnailUrl"
+  ]
+}

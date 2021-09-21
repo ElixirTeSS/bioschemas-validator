@@ -1,0 +1,25 @@
+{
+  "minimum": [
+    "name",
+    "taxonRank"
+  ],
+  "recommended": [
+    "parentTaxon",
+    "scientificName",
+    "url"
+  ],
+  "optional": [
+    "additionalType",
+    "alternateName",
+    "alternateScientificName",
+    "childTaxon",
+    "description",
+    "disambiguatingDescription",
+    "dwc:vernacularName",
+    "identifier",
+    "image",
+    "isBasedOn",
+    "mainEntityOfPage",
+    "sameAs"
+  ]
+}

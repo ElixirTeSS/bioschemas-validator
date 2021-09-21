@@ -1,0 +1,39 @@
+{
+  "minimum": [
+    "description",
+    "keywords",
+    "name"
+  ],
+  "recommended": [
+    "about",
+    "aggregateRating",
+    "citation",
+    "coursePrerequisites",
+    "hasCourseInstance",
+    "license",
+    "mentions",
+    "provider",
+    "skillLevel",
+    "timeRequired",
+    "url",
+    "uses"
+  ],
+  "optional": [
+    "abstract",
+    "accessibilitySummary",
+    "alternateName",
+    "comment",
+    "commentCount",
+    "contentReferenceTime",
+    "courseCode",
+    "creator",
+    "dateCreated",
+    "dateModified",
+    "educationalCredentialAwarded",
+    "hasPart",
+    "image",
+    "isBasedOn",
+    "learningOutcome",
+    "thumbnailUrl"
+  ]
+}

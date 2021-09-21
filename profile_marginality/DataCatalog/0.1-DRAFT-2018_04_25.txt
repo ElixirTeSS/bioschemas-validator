@@ -1,0 +1,24 @@
+{
+  "minimum": [
+    "description",
+    "keywords",
+    "name",
+    "provider",
+    "rdf:type",
+    "url"
+  ],
+  "recommended": [
+    "alternateName",
+    "citation",
+    "dataset",
+    "dateCreated",
+    "identifier",
+    "license",
+    "publication",
+    "sourceOrganization"
+  ],
+  "optional": [
+    "dateModified",
+    "fileFormat"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "minimum": [
+    "mainEntity",
+    "text"
+  ],
+  "recommended": [
+    "subjectOf",
+    "commentCount",
+    "creator",
+    "dateCreated",
+    "position"
+  ],
+  "optional": [
+    "dateModified",
+    "identifier",
+    "inLanguage",
+    "isAccessibleForFree",
+    "license"
+  ]
+}

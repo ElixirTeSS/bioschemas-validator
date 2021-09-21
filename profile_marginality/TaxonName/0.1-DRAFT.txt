@@ -1,0 +1,16 @@
+{
+  "minimum": [
+    "name"
+  ],
+  "recommended": [
+    "author",
+    "taxonRank",
+    "url"
+  ],
+  "optional": [
+    "additionalType",
+    "description",
+    "identifier",
+    "isBasedOn"
+  ]
+}

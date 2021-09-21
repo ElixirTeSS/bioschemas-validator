@@ -1,0 +1,29 @@
+{
+  "minimum": [
+    "description",
+    "featureList",
+    "name",
+    "softwareVersion",
+    "url"
+  ],
+  "recommended": [
+    "alternateName",
+    "citation",
+    "input",
+    "license",
+    "output",
+    "publisher"
+  ],
+  "optional": [
+    "applicationCategory",
+    "dateCreated",
+    "dateModified",
+    "downloadUrl",
+    "hasPart",
+    "identifier",
+    "keywords",
+    "operatingSystem",
+    "softwareHelp",
+    "softwareRequirements"
+  ]
+}

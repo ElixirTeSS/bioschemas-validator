@@ -1,0 +1,20 @@
+{
+  "minimum": [
+    "dataset",
+    "name",
+    "potentialAction",
+    "provider",
+    "rdf:type",
+    "supportedRefs",
+    "url"
+  ],
+  "recommended": [
+    "aggregator",
+    "description",
+    "identifier",
+    "version"
+  ],
+  "optional": [
+    "sameAs"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "minimum": [
+    "identifier",
+    "name"
+  ],
+  "recommended": [
+    "isAccessibleForFree",
+    "keywords",
+    "publisher",
+    "url"
+  ],
+  "optional": [
+    "alternateName",
+    "description",
+    "hasPart",
+    "inLanguage",
+    "license",
+    "publishingPrinciples",
+    "sameAs"
+  ]
+}

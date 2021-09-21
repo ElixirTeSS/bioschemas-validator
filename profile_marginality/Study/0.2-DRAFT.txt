@@ -1,0 +1,29 @@
+{
+  "minimum": [
+    "author",
+    "datePublished",
+    "description",
+    "identifier",
+    "name",
+    "studyDomain",
+    "studySubject"
+  ],
+  "recommended": [
+    "about",
+    "additionalProperty",
+    "citation",
+    "creator",
+    "dateCreated",
+    "endDate",
+    "keywords",
+    "startDate",
+    "studyLocation",
+    "studyProcess",
+    "url"
+  ],
+  "optional": [
+    "isPartOf",
+    "PPEO:hasGrowthChamber",
+    "relatedStudy"
+  ]
+}

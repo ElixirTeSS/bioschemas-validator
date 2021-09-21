@@ -1,0 +1,29 @@
+{
+  "minimum": [
+    "identifier",
+    "name"
+  ],
+  "recommended": [
+    "description",
+    "hasRepresentation",
+    "image",
+    "isContainedIn",
+    "isTranslatedInto",
+    "url"
+  ],
+  "optional": [
+    "additionalProperty",
+    "additionalType",
+    "alternateName",
+    "categoryCode",
+    "contains",
+    "enablesMF",
+    "encodes",
+    "involvedInBP",
+    "isTranscribedInto",
+    "isVariantOf",
+    "location",
+    "mainEntityOfPage",
+    "sameAs"
+  ]
+}

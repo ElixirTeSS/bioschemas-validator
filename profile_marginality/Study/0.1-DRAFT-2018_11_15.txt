@@ -1,0 +1,23 @@
+{
+  "minimum": [
+    "author",
+    "datePublished",
+    "description",
+    "identifier",
+    "name",
+    "studyDomain"
+  ],
+  "recommended": [
+    "about",
+    "additionalProperty",
+    "citation",
+    "dateCreated",
+    "keywords",
+    "studyProcess",
+    "url"
+  ],
+  "optional": [
+    "isPartOf",
+    "relatedStudy"
+  ]
+}

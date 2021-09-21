@@ -1,0 +1,25 @@
+{
+  "minimum": [
+    "identifier",
+    "name"
+  ],
+  "recommended": [
+    "bioChemAssociation",
+    "description",
+    "taxonomicRange",
+    "url"
+  ],
+  "optional": [
+    "additionalProperty",
+    "alternateName",
+    "anatomicalLocation",
+    "associatedDisease",
+    "hasMolecularFunction",
+    "image",
+    "isInvolvedInBiologicalProcess",
+    "isLocatedInSubcellularLocation",
+    "mainEntityOfPage",
+    "sameAs",
+    "valueReference"
+  ]
+}

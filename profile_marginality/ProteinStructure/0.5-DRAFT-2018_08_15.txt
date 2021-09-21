@@ -1,0 +1,26 @@
+{
+  "minimum": [
+    "identifier"
+  ],
+  "recommended": [
+    "alternateName",
+    "boundMolecule",
+    "description",
+    "expressionSystem",
+    "image",
+    "name",
+    "structureDeterminationMethod",
+    "url"
+  ],
+  "optional": [
+    "additionalProperty",
+    "additionalType",
+    "contains",
+    "hasCategoryCode",
+    "hasRepresentation",
+    "isContainedIn",
+    "location",
+    "mainEntityOfPage",
+    "sameAs"
+  ]
+}

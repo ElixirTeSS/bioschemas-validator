@@ -1,0 +1,19 @@
+{
+  "minimum": [
+    "description",
+    "identifier",
+    "keywords",
+    "name",
+    "url"
+  ],
+  "recommended": [
+    "about",
+    "citation",
+    "creator",
+    "dataset",
+    "license",
+    "measurementTechnique",
+    "version"
+  ],
+  "optional": []
+}

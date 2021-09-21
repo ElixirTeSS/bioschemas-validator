@@ -1,0 +1,29 @@
+{
+  "minimum": [
+    "bioSampleUsed",
+    "keywords",
+    "labEquipmentUsed",
+    "protocolPurpose",
+    "reagentUsed"
+  ],
+  "recommended": [
+    "author",
+    "citation",
+    "identifier",
+    "isPartOf",
+    "license",
+    "protocolAdvantage",
+    "protocolApplication",
+    "protocolLimitation",
+    "protocolOutcome",
+    "softwareUsed",
+    "step",
+    "totalTime"
+  ],
+  "optional": [
+    "dateCreated",
+    "dateModified",
+    "datePublished",
+    "isBasedOn"
+  ]
+}

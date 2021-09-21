@@ -1,0 +1,28 @@
+{
+  "minimum": [
+    "identifier",
+    "name"
+  ],
+  "recommended": [
+    "associatedDisease",
+    "description",
+    "hasSequence",
+    "taxonomicRange",
+    "url"
+  ],
+  "optional": [
+    "alternateName",
+    "bioChemInteraction",
+    "bioChemSimilarity",
+    "hasBioChemEntityPart",
+    "hasMolecularFunction",
+    "hasRepresentation",
+    "image",
+    "isEncodedByBioChemEntity",
+    "isInvolvedInBiologicalProcess",
+    "isLocatedInSubcellularLocation",
+    "isPartOfBioChemEntity",
+    "mainEntityOfPage",
+    "sameAs"
+  ]
+}

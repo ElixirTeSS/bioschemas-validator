@@ -1,0 +1,33 @@
+{
+  "minimum": [
+    "courseMode",
+    "location"
+  ],
+  "recommended": [
+    "endDate",
+    "inLanguage",
+    "instructor",
+    "offers",
+    "startDate",
+    "url"
+  ],
+  "optional": [
+    "alternateName",
+    "contributor",
+    "description",
+    "duration",
+    "eventStatus",
+    "funder",
+    "helper",
+    "image",
+    "maximumAttendeeCapacity",
+    "mentions",
+    "name",
+    "organizer",
+    "review",
+    "subEvent",
+    "superEvent",
+    "uses",
+    "workFeatured"
+  ]
+}

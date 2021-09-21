@@ -1,0 +1,26 @@
+{
+  "minimum": [
+    "author",
+    "dateCreated",
+    "input",
+    "name",
+    "output",
+    "programmingLanguage",
+    "url"
+  ],
+  "recommended": [
+    "contributor",
+    "description",
+    "hasPart",
+    "keywords",
+    "license",
+    "softwareRequirements",
+    "targetProduct"
+  ],
+  "optional": [
+    "dateModified",
+    "identifier",
+    "image",
+    "version"
+  ]
+}

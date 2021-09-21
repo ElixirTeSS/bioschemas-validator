@@ -1,0 +1,19 @@
+{
+  "minimum": [
+    "name"
+  ],
+  "recommended": [
+    "parentTaxon",
+    "taxonRank",
+    "url"
+  ],
+  "optional": [
+    "additionalType",
+    "alternateName",
+    "childTaxon",
+    "sameAs",
+    "scientificName",
+    "scientificNameAuthorship",
+    "vernacularName"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "URL": {
+    "$id": "#url",
+    "validityCheck": "type URL(according to schema RFC3986)",
+    "type": "string",
+    "pattern": "^[http(s)?://]",
+    "format": "uri",
+    "not": {
+      "type": "string",
+      "pattern": "^[^(http(s)?://)].",
+      "format": "uri"
+    }
+  }
+}

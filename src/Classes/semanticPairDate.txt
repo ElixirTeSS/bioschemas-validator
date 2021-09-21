@@ -1,0 +1,14 @@
+birthDate deathDate
+availabilityStarts availabilityEnds
+applicationStartDate applicationDeadline
+dateCreated dateDeleted
+dateCreated dateModified
+dateModified dateDeleted
+expectedArrivalFrom expectedArrivalUntil
+foundingDate dissolutionDate
+datePosted jobStartDate
+productionDate purchaseDate
+releaseDate purchaseDate
+startDate endDate
+validFrom validThrough
+validFrom validUntil

@@ -1,0 +1,23 @@
+{
+  "minimum": [
+    "description",
+    "keywords",
+    "name",
+    "provider",
+    "url"
+  ],
+  "recommended": [
+    "about",
+    "alternateName",
+    "citation",
+    "dataset",
+    "dateCreated",
+    "identifier",
+    "license",
+    "sourceOrganization"
+  ],
+  "optional": [
+    "dateModified",
+    "encodingFormat"
+  ]
+}

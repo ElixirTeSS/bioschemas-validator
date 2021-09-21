@@ -1,0 +1,15 @@
+{
+  "minimum": [
+    "additionalType",
+    "encodingFormat",
+    "name"
+  ],
+  "recommended": [
+    "description"
+  ],
+  "optional": [
+    "defaultValue",
+    "identifier",
+    "valueRequired"
+  ]
+}

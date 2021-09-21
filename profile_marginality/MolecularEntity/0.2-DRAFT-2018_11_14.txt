@@ -1,0 +1,28 @@
+{
+  "minimum": [
+    "identifier",
+    "name",
+    "url"
+  ],
+  "recommended": [
+    "inChI",
+    "inChIKey",
+    "iupacName",
+    "molecularFormula",
+    "molecularWeight",
+    "smiles"
+  ],
+  "optional": [
+    "alternateName",
+    "biochemicalInteraction",
+    "biochemicalSimilarity",
+    "biologicalRole",
+    "chemicalRole",
+    "description",
+    "disambiguatingDescription",
+    "image",
+    "monoisotopicMolecularWeight",
+    "potentialUse",
+    "sameAs"
+  ]
+}

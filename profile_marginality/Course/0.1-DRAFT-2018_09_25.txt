@@ -1,0 +1,23 @@
+{
+  "minimum": [
+    "audience",
+    "description",
+    "keywords",
+    "name",
+    "url"
+  ],
+  "recommended": [
+    "coursePrerequisites",
+    "hasCourseInstance",
+    "producer"
+  ],
+  "optional": [
+    "author",
+    "courseCode",
+    "image",
+    "inLanguage",
+    "provider",
+    "sponsor",
+    "thumbnailUrl"
+  ]
+}

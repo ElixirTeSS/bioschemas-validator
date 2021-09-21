@@ -1,0 +1,220 @@
+{
+  "@type": "Taxon",
+  "version": "0.1-DRAFT-2018_09_25",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "@context": "http://schema.org",
+  "$defs": {
+    "URL": {
+      "$id": "#url",
+      "validityCheck": "type URL(according to schema RFC3986)",
+      "type": "string",
+      "pattern": "^[http(s)?://]",
+      "format": "uri",
+      "not": {
+        "type": "string",
+        "pattern": "^[^(http(s)?://)].",
+        "format": "uri"
+      }
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "additionalType": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "alternateName": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "isContainedIn": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "validityCheck": "\"BioChemEntity\"",
+            "properties": {
+              "@type": {
+                "const": "BioChemEntity",
+                "validityCheck": "item \"BioChemEntity\""
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"BioChemEntity\"",
+          "properties": {
+            "@type": {
+              "const": "BioChemEntity",
+              "validityCheck": "item \"BioChemEntity\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting \"BioChemEntity\" in an array or as a single object"
+    },
+    "name": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "rank": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "sameAs": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "scientificName": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "scientificNameAuthorship": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "taxonRank": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "vernacularName": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    }
+  }
+}

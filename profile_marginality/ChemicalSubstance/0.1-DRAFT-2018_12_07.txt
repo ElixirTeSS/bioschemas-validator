@@ -1,0 +1,23 @@
+{
+  "minimum": [
+    "identifier",
+    "name",
+    "url"
+  ],
+  "recommended": [
+    "hasBioChemEntityPart",
+    "molecularFormula"
+  ],
+  "optional": [
+    "alternateName",
+    "biochemicalInteraction",
+    "'biochemicalSimilarity '",
+    "biologicalRole",
+    "chemicalRole",
+    "description",
+    "disambiguatingDescription",
+    "image",
+    "potentialUse",
+    "sameAs"
+  ]
+}

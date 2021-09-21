@@ -1,0 +1,21 @@
+{
+  "minimum": [
+    "issueNumber"
+  ],
+  "recommended": [
+    "hasPart",
+    "identifier",
+    "isPartOf",
+    "pageEnd",
+    "pageStart",
+    "url"
+  ],
+  "optional": [
+    "about",
+    "editor",
+    "inLanguage",
+    "keywords",
+    "pagination",
+    "sameAs"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "minimum": [
+    "identifier",
+    "rdf:type"
+  ],
+  "recommended": [
+    "url"
+  ],
+  "optional": [
+    "additionalProperty",
+    "description",
+    "mainEntityOfPage",
+    "name"
+  ]
+}

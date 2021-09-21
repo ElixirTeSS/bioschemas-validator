@@ -1,0 +1,33 @@
+{
+  "minimum": [
+    "creator",
+    "dateCreated",
+    "input",
+    "license",
+    "name",
+    "output",
+    "programmingLanguage",
+    "sdPublisher",
+    "url",
+    "version"
+  ],
+  "recommended": [
+    "citation",
+    "contributor",
+    "description",
+    "hasPart",
+    "keywords",
+    "publisher",
+    "runtimePlatform",
+    "softwareRequirements",
+    "targetProduct"
+  ],
+  "optional": [
+    "alternateName",
+    "conditionsOfAccess",
+    "dateModified",
+    "encodingFormat",
+    "identifier",
+    "image"
+  ]
+}
