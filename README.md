@@ -2,7 +2,7 @@ Bioschemas validation suite
 ===============
 This is the validation suite for Bioschemas. It is currently under development with a web GUI on the way
 
-
+![Unit and Integration Tests](https://github.com/GloC99/Bioschemas-Validator/actions/workflows/python-app.yml/badge.svg)
 # Structure of the code
 
 The suite is made up of many different smaller components, as shown in the diagram below. This was designed for the adaptability and maintainability of the code.
