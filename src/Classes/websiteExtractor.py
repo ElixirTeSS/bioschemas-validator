@@ -4,12 +4,8 @@ import sys
 # ultimate_sitemap_parser
 from urllib.parse import urlparse
 import click
-# try:
-#     # python2
-#     from urlparse import urlparse
-# except:
-#     # python3
-#     from urllib.parse import urlparse
+sys.path.append("./")
+import src.Classes.config as config
 
 def extractWebsite(websiteLink, printDetail=False):
     outputName = pathlib.Path(urlparse(websiteLink).netloc+".txt")
@@ -18,14 +14,15 @@ def extractWebsite(websiteLink, printDetail=False):
         outputName.unlink()
     f = outputName.open(mode = "x")
 
-    print("Output location: " + str(outputName))
+    click.echo("Output location: " + str(outputName),
+          file=config.OUTPUT_LOCATION_WRITE)
 
     tree = sitemap_tree_for_homepage(websiteLink)
     for page in tree.all_pages():
-        # print(type(page))
         f.write(page.url + "\n")
         if printDetail:
-            print(page.url)
+            click.echo(str(page.url),
+                       file=config.OUTPUT_LOCATION_WRITE)
     f.close()
     return(outputName)
 
@@ -35,7 +32,8 @@ def isUrl(url):
         result = urlparse(url)
         return all([result.scheme, result.netloc, result.path])
     except:
-        click.echo("This is not a valid url, please double check.")
+        click.echo("This is not a valid url, please double check.",
+                   file=config.OUTPUT_LOCATION_WRITE)
         return False
 
 # if len(sys.argv) < 2:

@@ -23,40 +23,55 @@ def lowerFirstLetter(string):
     # read a profile data file into a list
 global filepath
 global title
+
+
 def build_profile(path):
     try:
         global filepath
         global outputName
         filepath = path
+
         outputName = pathlib.Path(filepath.name).stem + config.PROFILE_EXT
     #         filepath.parent.mkdir(parents=True, exist_ok=True)
         file = filepath.read_text()
         specInfo, mapping = separateSpecAndMapping(file)
+        # outfile = pag
         if specInfo is None or mapping is None:
             click.secho(
-                "Something in the profile yml file does not follow the format, the json schema will not be made.", fg="red")
+                "Something in the profile yml file does not follow the format, the json schema will not be made.", fg="red", file=config.OUTPUT_LOCATION_WRITE)
             return -1
         read_definition()
         read_typeValueDict()
         dictMade = produce_dict(specInfo, mapping)
         print_dict(dictMade, filepath)
         Draft7Validator.check_schema(dictMade)
-        click.secho("Done", fg='green')
+        click.secho("Done", fg="green", file=config.OUTPUT_LOCATION_WRITE)
+        
+
         return 0
     except KeyboardInterrupt:
-        click.secho("Program stopped", fg="red")
+        click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
         return -1
     except FileNotFoundError:
-        errorMessage = str("The target data " + str(path) + " is not an existing file, please double check")
-        click.secho(errorMessage, fg='yellow')
+        errorMessage = str("The target data " + str(path) +
+                           " is not an existing file, please double check")
+        click.secho(errorMessage, fg='yellow',
+                    file=config.OUTPUT_LOCATION_WRITE)
+        # sys.exc_info() is a tuple of type
+        errorMessage = ""
+        for item in sys.exc_info():
+            errorMessage = errorMessage + str(item)
+
+        click.secho("Error:" + errorMessage, fg="red",
+                    file=config.OUTPUT_LOCATION_WRITE)
     except:
         errorMessage = ""
         # sys.exc_info() is a tuple of type
         for item in sys.exc_info():
             errorMessage = errorMessage + str(item)
 
-        click.secho("Error:" + errorMessage, fg="red")
-        print(sys.exc_info())
+        click.secho("Error:" + errorMessage, fg="red", file=config.OUTPUT_LOCATION_WRITE)
+
         return -1
 
 def read_definition():
@@ -72,6 +87,7 @@ def read_typeValueDict():
     file = pathlib.Path("src/Classes/typeValueDict.txt").read_text()
 
     typeValueDict = json.loads(file)
+
 
 def produce_dict(specInfo, mapping):
     """Use the information extracted from the yml file to build a json schemas
@@ -108,7 +124,6 @@ def produce_dict(specInfo, mapping):
             recommendedProperties.append(propertyName.strip())
         elif "marginality: Optional" in propertyInfo:
             optionalProperties.append(propertyName.strip())
-
         individualProp = make_property(propertyInfo, propertyName)
         dictMade["properties"][propertyName.replace(" ", "")] = individualProp
 
@@ -159,6 +174,7 @@ def make_profile_spec(specInfo):
     dictMade["@context"] = "http://schema.org"
     return dictMade
 
+
 def make_property(propertyInfo, propertyName):
     global title
     title = propertyName
@@ -172,13 +188,13 @@ def make_property(propertyInfo, propertyName):
     propertyDict = tranform_yml_to_dict(lines)
     if propertyDict["cardinality"] == "\"\"":
         click.secho("For property \"" + propertyName +
-                    "\", the cardinality value is empty. It has been assumes to be MANY for the profile builder, please double check.", fg="cyan")
+                    "\", the cardinality value is empty. It has been assumes to be MANY for the profile builder, please double check.", fg="cyan", file=config.OUTPUT_LOCATION_WRITE)
     if propertyDict["expected_types"] == "\"\"":
         click.secho("For property \"" + propertyName +
-                    "\", the expected types is empty. Please double check.", fg="cyan")
+                    "\", the expected types is empty. Please double check.", fg="cyan", file=config.OUTPUT_LOCATION_WRITE)
     if propertyDict["marginality"] == "\"\"":
         click.secho("For property \"" + propertyName +
-                    "\", the marginality is empty. It should be Minimum,Recommended or Optional.", fg="cyan")
+                    "\", the marginality is empty. It should be Minimum,Recommended or Optional.", fg="cyan", file=config.OUTPUT_LOCATION_WRITE)
     controlledVocab = True if propertyDict["controlled_vocab"] != "" else False
     ManyOrNone = True if propertyDict["cardinality"] == "MANY" or propertyDict["cardinality"] == "\"\"" else False
 #         if propertyDict["cardinality"] == "MANY":
