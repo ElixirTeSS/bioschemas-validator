@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import os
 import sys
 sys.path.append("./")
 
@@ -65,4 +66,5 @@ def validation(target_data, static_jsonld=False, csv="N", profile="N", convert=F
     return result
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    port = os.environ.get('PORT') or 8080
+    app.run(host="127.0.0.1", port=port, debug=True)
