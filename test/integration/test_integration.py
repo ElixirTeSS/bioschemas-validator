@@ -7,6 +7,7 @@ import pathlib
 import os
 import json
 import sys
+import shutil
 
 
 def blockPrint():
@@ -66,27 +67,18 @@ def expectedCode(target_data="", static_jsonld=False, csv=False, profile="N", co
     # print("expectedCode" , code)
 
     return 0
-    
-def cleanup(path="testOutput"):
-    # print(path)
-    # print("*************************************************")
-    if type(path) == str:
-        path = pathlib.Path(path)
-    if path.exists():
-        if path.is_file():
-            path.unlink()
-        elif path.is_dir():
-            cleanupDir(path)
 
+def cleanup(path):
+    """ param <path> could either be relative or absolute. """
 
-def cleanupDir(path):
-    for child in path.iterdir():
-        if child.is_file():
-            child.unlink()
-        elif child.is_dir():
-            cleanupDir(child)
-    path.rmdir()
-    return
+    # https://stackoverflow.com/questions/6996603/how-to-delete-a-file-or-folder-in-python
+    if os.path.isfile(path) or os.path.islink(path):
+        os.remove(path)  # remove the file
+    elif os.path.isdir(path):
+        shutil.rmtree(path)  # remove dir and all contains
+    else:
+        raise ValueError("file {} is not a file or dir.".format(path))
+
 
 # move into directory before testing
 # remove testing result unless error occur
@@ -101,9 +93,9 @@ def cleanupProfileMade(path):
 
     resultMarg = config.PROFILE_MARG_LOC / \
         pathlib.Path(subPath)
-
-    cleanupDir(resultJSON)
-    cleanupDir(resultMarg)
+    
+    cleanup(resultJSON)
+    cleanup(resultMarg)
 
 
 class TestIntegration(unittest.TestCase):
@@ -119,7 +111,7 @@ class TestIntegration(unittest.TestCase):
         expected = 0
         enablePrint()
         self.assertEqual(code, expected)
-        cleanupProfileMade(target)
+        cleanup(target)
 
     def testCLIBuildProfileCorrect(self):
         action = "buildprofile"
@@ -128,7 +120,7 @@ class TestIntegration(unittest.TestCase):
         expected = 0
         enablePrint()
         self.assertEqual(code, expected)
-        cleanupProfileMade(target)
+        cleanup(target)
 
     def testCLIBuildProfileMarginalityCorrect(self):
         action = "buildprofile"
@@ -136,9 +128,9 @@ class TestIntegration(unittest.TestCase):
         code = testValidation(action, target_data=target)
         expected = 0
         resultMargLoc = config.PROFILE_MARG_LOC + \
-            "/profile_lib/correct_format_profile_yml" + config.PROFILE_MARG_EXT
+            "/fixtures/correct_format_profile_yml" + config.PROFILE_MARG_EXT
         resultSchemaLoc = config.PROFILE_LOC + \
-            "/profile_lib/correct_format_profile_yml" + config.PROFILE_EXT
+            "/fixtures/correct_format_profile_yml" + config.PROFILE_EXT
         resultMarg = json.loads(pathlib.Path(resultMargLoc).read_text())
         resultSchema = json.loads(pathlib.Path(resultSchemaLoc).read_text())
         enablePrint()
