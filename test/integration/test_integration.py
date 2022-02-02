@@ -68,6 +68,7 @@ def expectedCode(target_data="", static_jsonld=False, csv=False, profile="N", co
 
     return 0
 
+
 def cleanup(path):
     """ param <path> could either be relative or absolute. """
 
@@ -78,24 +79,6 @@ def cleanup(path):
         shutil.rmtree(path)  # remove dir and all contains
     else:
         raise ValueError("file {} is not a file or dir.".format(path))
-
-
-# move into directory before testing
-# remove testing result unless error occur
-def cleanupProfileMade(path):
-    initialPath = pathlib.Path(path)
-    parentNo = len(initialPath.parents)
-    rootDir = initialPath.parents[parentNo-2]
-    subPath = str(initialPath.parent).lstrip(str(rootDir) + "/")
-    
-    resultJSON = config.PROFILE_LOC / \
-        pathlib.Path(subPath) 
-
-    resultMarg = config.PROFILE_MARG_LOC / \
-        pathlib.Path(subPath)
-    
-    cleanup(resultJSON)
-    cleanup(resultMarg)
 
 
 class TestIntegration(unittest.TestCase):
@@ -139,7 +122,7 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(sum(map(len, resultMarg.values())),
                          len(resultSchema["properties"].keys()))
 
-        cleanupProfileMade(target)
+        cleanup(target)
 
     def testCLIBuildProfileError(self):
         action = "buildprofile"
