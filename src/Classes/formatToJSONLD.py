@@ -78,7 +78,8 @@ def convertformattoJSONLD(path, dataFormat):
     # serialize from the graph to json-ld
     jsonData = g.serialize(format='json-ld', context=context, indent=4)
 
-    pretty_json_dict = json.loads(jsonData.decode("utf-8"))
+    jsonString = jsonData if isinstance(jsonData, str) else jsonData.decode("utf-8")
+    pretty_json_dict = json.loads(jsonString)
 
     # save it to a file of the same name but change from .nq to .txt
     path = pathlib.Path(path)
