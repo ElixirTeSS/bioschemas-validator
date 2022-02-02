@@ -31,7 +31,7 @@ class TestUnits(unittest.TestCase):
     def testYmlToDictError(self):
         # assert testYmlToDictError() is None
         specInfo, mapping = testSeparateSpecAndMapping(
-            "test/profile_lib/wrong_format_profile_yml.html")
+            "test/fixtures/profile_lib/wrong_format_profile_yml.html")
         self.assertIsNone(
             specInfo, "The specification was extracted")
         self.assertIsNone(
@@ -39,7 +39,7 @@ class TestUnits(unittest.TestCase):
 
     def testYmlToDictCorrect(self):
         specInfo, mapping = testSeparateSpecAndMapping(
-            "test/profile_lib/correct_format_profile_yml.html")
+            "test/fixtures/profile_lib/correct_format_profile_yml.html")
         self.assertIsNotNone(
             specInfo,  "The specification was not extracted")
         self.assertIsNotNone(
@@ -47,11 +47,11 @@ class TestUnits(unittest.TestCase):
         
     def testCheckCompletenessNum(self):
         blockPrint()
-        profileListDictPath = pathlib.Path("test/profile_lib/profile_marg.txt")
+        profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
         profileListDict = json.loads(profileListDictPath.read_text())
 
         profileExistPath = pathlib.Path(
-            "test/profile_lib/profile_exist_prop.txt")
+            "test/fixtures/profile_lib/profile_exist_prop.txt")
         with profileExistPath.open() as f:
             existProperty = f.read().splitlines()
         diffKeys = []
@@ -65,11 +65,11 @@ class TestUnits(unittest.TestCase):
 
     def testCheckCompletenessName(self):
         blockPrint()
-        profileListDictPath = pathlib.Path("test/profile_lib/profile_marg.txt")
+        profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
         profileListDict = json.loads(profileListDictPath.read_text())
 
         profileExistPath = pathlib.Path(
-            "test/profile_lib/profile_exist_prop.txt")
+            "test/fixtures/profile_lib/profile_exist_prop.txt")
         with profileExistPath.open() as f:
             existProperty = f.read().splitlines()
         diffKeys = []
@@ -83,11 +83,11 @@ class TestUnits(unittest.TestCase):
 
     def testCheckCompletenessAll(self):
         blockPrint()
-        profileListDictPath = pathlib.Path("test/profile_lib/profile_marg.txt")
+        profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
         profileListDict = json.loads(profileListDictPath.read_text())
 
         profileExistPath = pathlib.Path(
-            "test/profile_lib/profile_exist_prop.txt")
+            "test/fixtures/profile_lib/profile_exist_prop.txt")
         with profileExistPath.open() as f:
             existProperty = f.read().splitlines()
         diffKeys = []

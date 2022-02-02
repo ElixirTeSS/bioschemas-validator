@@ -59,7 +59,7 @@ def expectedCode(target_data="", static_jsonld=False, csv=False, profile="N", co
     if target_data.is_file():
         # print(type(target_data))
         # if it's metadata
-        if target_data.suffix == testConfig.METADATA_EXT:
+        if target_data.suffix == config.METADATA_EXT:
             code += 1*10
         # if it's txt file, which would be a list of path
         elif target_data.suffix == ".txt":
@@ -100,50 +100,49 @@ def cleanupProfileMade(path):
     rootDir = initialPath.parents[parentNo-2]
     subPath = str(initialPath.parent).lstrip(str(rootDir) + "/")
     
-    resultJSON = testConfig.PROFILE_LOC / \
+    resultJSON = config.PROFILE_LOC / \
         pathlib.Path(subPath) 
 
-    resultMarg = testConfig.PROFILE_MARG_LOC / \
+    resultMarg = config.PROFILE_MARG_LOC / \
         pathlib.Path(subPath)
 
     cleanupDir(resultJSON)
     cleanupDir(resultMarg)
 
-class TestIntegration(unittest.TestCase):
-    """Testing how the validator behave for different validation command the file type
-        The code is hand calculated and using src/command_returns.txt
-    """
 
+class TestIntegration(unittest.TestCase):
+    """
+    Testing how the validator behave for different validation command file type
+    The code is hand calculated and using src/command_returns.txt
+    """
 
     def testCLIBuildProfileMultiple(self):
         action = "buildprofile"
-        target = "test/profile_lib/demo_profile.txt"
+        target = "test/fixtures/profile_lib/demo_profile.txt"
         code = testValidation(action, target_data=target)
         expected = 0
         enablePrint()
         self.assertEqual(code, expected)
         cleanupProfileMade(target)
 
-    # @unittest.skip
     def testCLIBuildProfileCorrect(self):
         action = "buildprofile"
-        target = "test/profile_lib/correct_format_profile_yml.html"
+        target = "test/fixtures/profile_lib/correct_format_profile_yml.html"
         code = testValidation(action, target_data=target)
         expected = 0
         enablePrint()
         self.assertEqual(code, expected)
         cleanupProfileMade(target)
 
-    # @unittest.skip
     def testCLIBuildProfileMarginalityCorrect(self):
         action = "buildprofile"
-        target = "test/profile_lib/correct_format_profile_yml.html"
+        target = "test/fixtures/profile_lib/correct_format_profile_yml.html"
         code = testValidation(action, target_data=target)
         expected = 0
-        resultMargLoc = testConfig.PROFILE_MARG_LOC + \
-            "/profile_lib/correct_format_profile_yml" + testConfig.PROFILE_MARG_EXT
-        resultSchemaLoc = testConfig.PROFILE_LOC + \
-            "/profile_lib/correct_format_profile_yml" + testConfig.PROFILE_EXT
+        resultMargLoc = config.PROFILE_MARG_LOC + \
+            "/profile_lib/correct_format_profile_yml" + config.PROFILE_MARG_EXT
+        resultSchemaLoc = config.PROFILE_LOC + \
+            "/profile_lib/correct_format_profile_yml" + config.PROFILE_EXT
         resultMarg = json.loads(pathlib.Path(resultMargLoc).read_text())
         resultSchema = json.loads(pathlib.Path(resultSchemaLoc).read_text())
         enablePrint()
@@ -154,19 +153,16 @@ class TestIntegration(unittest.TestCase):
 
         cleanupProfileMade(target)
 
-    # @unittest.skip
     def testCLIBuildProfileError(self):
         action = "buildprofile"
-        target = "test/profile_lib/wrong_format_profile_yml.html"
+        target = "test/fixtures/profile_lib/wrong_format_profile_yml.html"
         code = testValidation(action, target_data=target)
         expected = -1
         enablePrint()
         self.assertEqual(code, expected)
 
-
-    # @unittest.skip
     def testCLILiveDataOnePageJSONLDToBeExtracted(self):
-        # pathlib.Path(testConfig.METADATA_LOC).mkdir()
+        # pathlib.Path(config.METADATA_LOC).mkdir()
         action = "validate"
         target = "https://workflowhub.eu/workflows/137"
         staticJsonld = True
@@ -176,10 +172,9 @@ class TestIntegration(unittest.TestCase):
         # print("expected:", expected)
         self.assertEqual(code, expected)
 
-    # @unittest.skip
     def testCLILiveDataMultiPageJSONLDToBeExtracted(self):
         action = "validate"
-        target = pathlib.Path("test/metadata_lib/static_jsonld_url_1to1.txt")
+        target = pathlib.Path("test/fixtures/metadata_lib/static_jsonld_url_1to1.txt")
         staticJsonld = True
         code = testValidation(action, target_data=str(
             target), static_jsonld=staticJsonld)
@@ -187,12 +182,9 @@ class TestIntegration(unittest.TestCase):
         enablePrint()
         self.assertEqual(code, expected)
         
-
-
-    # @unittest.skip
     def testCLILiveDataMultiPageMultiJSONLDToBeExtracted(self):
         action = "validate"
-        target = pathlib.Path("test/metadata_lib/static_jsonld_url_1toN.txt")
+        target = pathlib.Path("test/fixtures/metadata_lib/static_jsonld_url_1toN.txt")
         staticJsonld = True
         code = testValidation(action, target_data=str(
             target), static_jsonld=staticJsonld)
@@ -201,44 +193,35 @@ class TestIntegration(unittest.TestCase):
         enablePrint()
         self.assertEqual(code, expected)
 
-    # @unittest.skip
     def testCLINQfileToConvert(self):
         action = "tojsonld"
-        target = pathlib.Path("test/metadata_lib/format_NQuads/3.nq")
-        code = testValidation(action, target_data=str(
-            target))
+        target = pathlib.Path("test/fixtures/metadata_lib/format_NQuads/3.nq")
+        code = testValidation(action, target_data=str(target))
         expected = 0
         enablePrint()
         self.assertEqual(code, expected)
 
-
-    # @unittest.skip
     def testCLINQDirToConvert(self):
         action = "tojsonld"
-        target = pathlib.Path("test/metadata_lib/format_NQuads")
-        code = testValidation(action, target_data=str(
-            target))
+        target = pathlib.Path("test/fixtures/metadata_lib/format_NQuads")
+        code = testValidation(action, target_data=str(target))
         expected = 0
         enablePrint()
         self.assertEqual(code, expected)
 
-    # @unittest.skip
     def testCLINQfileToConvertValidate(self):
         action = "validate"
-        target = pathlib.Path("test/metadata_lib/format_NQuads/3.nq")
+        target = pathlib.Path("test/fixtures/metadata_lib/format_NQuads/3.nq")
         convert = True
-        code = testValidation(action, target_data=str(
-            target), convert=convert)
+        code = testValidation(action, target_data=str(target), convert=convert)
         expected = expectedCode(target_data=target, convert=convert)
 
         enablePrint()
         self.assertEqual(code, expected)
 
-
-    # @unittest.skip
     def testCLINQDirToConvertValidate(self):
         action = "validate"
-        target = pathlib.Path("test/metadata_lib/format_NQuads")
+        target = pathlib.Path("test/fixtures/metadata_lib/format_NQuads")
         convert = True
         code = testValidation(action, target_data=str(
             target), convert=convert)
@@ -258,10 +241,9 @@ class TestIntegration(unittest.TestCase):
         enablePrint()
         self.assertEqual(code, expected)
 
-    # @unittest.skip
     def testCLIMetadataWithProfile(self):
         action = "validate"
-        target = "test/metadata_lib/dataset_metadata"
+        target = "test/fixtures/metadata_lib/dataset_metadata"
         profileLoc = "profile_json/Dataset/0.3-RELEASE-2019_06_14.json"
         code = testValidation(action, target_data=target, profile=profileLoc)
         expected = expectedCode(
@@ -271,7 +253,7 @@ class TestIntegration(unittest.TestCase):
 
     def testCLISitemapExtractor(self):
         action = "sitemap"
-        target = "test/sitemap/sitemap_index_shorten.xml"
+        target = "test/fixtures/sitemap/sitemap_index_shorten.xml"
         result = testValidation(action, target_data=target)
         # click.echo("result" + str(result))
 
@@ -287,11 +269,9 @@ class TestIntegration(unittest.TestCase):
         # click.echo("result" + str(result))
         cleanup(result)
 
-    # @unittest.skip
-
     def testCleanUpLiveData(self):
-        cleanup(testConfig.METADATA_LOC)
-        cleanup("test/metadata_lib/format_NQuads_jsonld")
+        cleanup(config.METADATA_LOC)
+        cleanup("test/fixtures/metadata_lib/format_NQuads_jsonld")
 
 
 if __name__ == '__main__':
