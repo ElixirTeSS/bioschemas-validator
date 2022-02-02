@@ -16,8 +16,6 @@ def blockPrint():
     nullOutput = open(os.devnull, 'w')
     sys.stdout = nullOutput
 
-# Restore
-
 
 def enablePrint():
     """Lets the output displaying on the terminal
@@ -31,10 +29,8 @@ def testValidation(action, target_data="", static_jsonld=False, csv=False, profi
     blockPrint()
     if action == 'buildprofile':
         return command.buildProfile(target_data)
-
     elif action == 'validate':
         return command.validateData(target_data, static_jsonld, csv, profile, convert, sitemap_convert)
-
     elif action == 'tojsonld':
         return command.toJsonLD(target_data, action)
     elif action == "sitemap":
@@ -230,7 +226,6 @@ class TestIntegration(unittest.TestCase):
         enablePrint()
         self.assertEqual(code, expected)
 
-    # @unittest.skip
     def testCLILiveDataOnePageJSONLDToBeExtractedCSV(self):
         action = "validate"
         target = "https://workflowhub.eu/workflows/137"

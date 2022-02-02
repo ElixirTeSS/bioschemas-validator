@@ -16,8 +16,6 @@ def blockPrint():
     nullOutput = open(os.devnull, 'w')
     sys.stdout = nullOutput
 
-# Restore
-
 
 def enablePrint():
     """Lets the output displaying on the terminal

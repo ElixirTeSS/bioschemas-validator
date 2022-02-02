@@ -14,6 +14,8 @@ import pathlib
 #      } 
 #      should be
 #      "sameAs": "http://purl.uniprot.org/uniprot/P32774"
+
+
 def convertIDtoValue(oldDict):
     """If the property only has one kay "@id", assume it to be the value of the property
 
@@ -33,6 +35,7 @@ def convertIDtoValue(oldDict):
             oldDict[k] = v
     return oldDict
 
+
 def convertIDtoValueListRecur(listOfDict):
     """Recursive function of the convertIDtoValue
 
@@ -50,6 +53,8 @@ def convertIDtoValueListRecur(listOfDict):
         elif isinstance(dic, list):
             convertIDtoValueListRecur(dic)
     return newList
+
+
 def convertformattoJSONLD(path, dataFormat):
     """Convert metadata in other format such as NQuards and RDF to JSON-LD
 
@@ -60,7 +65,7 @@ def convertformattoJSONLD(path, dataFormat):
     Returns:
         resultPaths(list): The list of path of the resulting metadata in JSONLD
 
-    """        
+    """
     g = rdflib.ConjunctiveGraph()
 
     # parse the metadata to a graph
