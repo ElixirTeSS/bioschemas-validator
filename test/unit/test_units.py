@@ -1,12 +1,13 @@
-from testProfileBuilding import testSeparateSpecAndMapping
+from test.unit.test_profileBuilding import testSeparateSpecAndMapping
 import unittest
 import sys
 import json
 import pathlib
 import os
-sys.path.append("./")
+
 from src.Classes.validator import check_completeness
-from src.Classes.staticJSONLDExtractor  import extract
+from src.Classes.staticJSONLDExtractor import extract
+
 
 def blockPrint():
     """Stops the output displaying on the terminal

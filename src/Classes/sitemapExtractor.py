@@ -1,14 +1,7 @@
-from xml.dom.minidom import parse
 import xml.dom.minidom
-import sys
 import pathlib
-import requests
-# ultimate_sitemap_parser
-from usp.tree import sitemap_tree_for_homepage
-
 import click
 
-sys.path.append("./")
 import src.Classes.config as config
 # For a sitemap that has been downloaded
 # extract all the link inside and store in a file of the same name in the same directory as this program

@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request
 import os
-import sys
-sys.path.append("./")
 
 import src.command as command
 import src.Classes.config as config

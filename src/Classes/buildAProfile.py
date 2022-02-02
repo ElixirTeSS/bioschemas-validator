@@ -3,26 +3,21 @@ from src.Classes.profileYmlToDict import tranform_yml_to_dict
 from src.Classes.profileYmlToDict import separateSpecAndMapping
 import itertools
 import json
-import os
 import pathlib
-#import extruct
-#import requests
-import pprint
-import re
-
 import click
 import sys
-sys.path.append("./")
 import src.Classes.config as config
 from jsonschema import Draft7Validator
+
+global filepath
+global title
+
 
 def lowerFirstLetter(string):
     return string[0].lower() + string[1:]
 # build a json-LD profile from information in a text file
 # as the validator is using profile from text file in form of python dict
     # read a profile data file into a list
-global filepath
-global title
 
 
 def build_profile(path):

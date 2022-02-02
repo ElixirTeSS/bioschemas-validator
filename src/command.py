@@ -1,7 +1,5 @@
-# from pathlib import Path
-from tqdm import trange, tqdm
 import sys
-sys.path.append("./")
+
 from src.Classes.staticJSONLDExtractor import extract
 from src.Classes.formatToJSONLD import convertformattoJSONLD
 from src.Classes.validator import validate

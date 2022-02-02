@@ -1,17 +1,13 @@
 import extruct
 import requests
-import pprint
 import json
 import os
 import click
 from w3lib.html import get_base_url
 from urllib.parse import urlparse
-import time
-import sys
-sys.path.append("./")
 from bs4 import BeautifulSoup
 import re
-import pathlib 
+import pathlib
 import rdflib
 import src.Classes.config as config
 # def progressPerc(total, current):

@@ -1,10 +1,7 @@
 from usp.tree import sitemap_tree_for_homepage
 import pathlib
-import sys
-# ultimate_sitemap_parser
 from urllib.parse import urlparse
 import click
-sys.path.append("./")
 import src.Classes.config as config
 
 def extractWebsite(websiteLink, printDetail=False):

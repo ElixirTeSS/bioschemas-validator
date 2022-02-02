@@ -1,12 +1,9 @@
 import json
 from jsonschema import Draft7Validator
-import datetime
 import os
 import re
 from dateutil.parser import parse
 import pathlib
-import sys
-sys.path.append("./")
 import src.Classes.config as config
 import click
 

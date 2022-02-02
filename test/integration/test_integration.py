@@ -1,15 +1,14 @@
-import sys
-sys.path.append("./")
 import src.command as command
 from src.Classes.staticJSONLDExtractor import extract
-# import src.Classes.config as config
-import testingConfig as testConfig
+import test.integration.config as config
 
 import unittest
 import pathlib
 import os
 import json
-import click
+import sys
+
+
 def blockPrint():
     """Stops the output displaying on the terminal
     """
