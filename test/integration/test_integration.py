@@ -25,7 +25,7 @@ def enablePrint():
     sys.stdout = sys.__stdout__
 
 
-def testValidation(action, target_data="", static_jsonld=False, csv=False, profile="N", convert=False, sitemap_convert=False):
+def testValidation(action="", target_data="", static_jsonld=False, csv=False, profile="N", convert=False, sitemap_convert=False):
     blockPrint()
     if action == 'buildprofile':
         return command.buildProfile(target_data)
