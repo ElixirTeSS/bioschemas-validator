@@ -51,6 +51,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 output.txt
+profile_json/fixtures
+profile_marginality/fixtures/
 
 # Translations
 *.mo
