@@ -81,8 +81,6 @@ class TestIntegration(unittest.TestCase):
         target = "test/fixtures/profile_lib/correct_format_profile_yml.html"
         code = testValidation(action, target_data=target)
         expected = 0
-        print(code)
-        print(expected)
         self.assertEqual(code, expected)
         cleanup(target)
 
