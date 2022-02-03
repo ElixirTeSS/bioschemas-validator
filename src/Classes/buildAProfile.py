@@ -1,6 +1,7 @@
 #from w3lib.html import get_base_url
 from src.Classes.profileYmlToDict import tranform_yml_to_dict
 from src.Classes.profileYmlToDict import separateSpecAndMapping
+import src.Classes.exceptions as ex
 import itertools
 import json
 import pathlib
@@ -31,9 +32,7 @@ def build_profile(path):
         specInfo, mapping = separateSpecAndMapping(file)
         # outfile = pag
         if specInfo is None or mapping is None:
-            click.secho(
-                "Something in the profile yml file does not follow the format, the json schema will not be made.", fg="red", file=config.OUTPUT_LOCATION_WRITE)
-            return -1
+            raise ex.WrongFormat
         read_definition()
         read_typeValueDict()
         dictMade = produce_dict(specInfo, mapping)
@@ -41,6 +40,11 @@ def build_profile(path):
         Draft7Validator.check_schema(dictMade)
         click.secho("Done", fg="green", file=config.OUTPUT_LOCATION_WRITE)
         return 0
+    except ex.WrongFormat as exceptMessage:
+        click.secho(f"Error: {exceptMessage}",
+                    fg="red",
+                    file=config.OUTPUT_LOCATION_WRITE)
+        return -1 
     except KeyboardInterrupt as exceptMessage:
         click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
         click.secho(f"Error: {exceptMessage}",
