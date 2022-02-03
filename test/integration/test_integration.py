@@ -9,25 +9,7 @@ import json
 import sys
 import shutil
 
-
-def blockPrint():
-    """Stops the output displaying on the terminal
-    """
-    global nullOutput
-    nullOutput = open(os.devnull, 'w')
-    sys.stdout = nullOutput
-
-
-def enablePrint():
-    """Lets the output displaying on the terminal
-    """
-    global nullOutput
-    nullOutput.close()
-    sys.stdout = sys.__stdout__
-
-
 def testValidation(action="", target_data="", static_jsonld=False, csv=False, profile="N", convert=False, sitemap_convert=False):
-    blockPrint()
     if action == 'buildprofile':
         return command.buildProfile(target_data)
     elif action == 'validate':
@@ -92,7 +74,6 @@ class TestIntegration(unittest.TestCase):
         target = "test/fixtures/profile_lib/demo_profile.txt"
         code = testValidation(action, target_data=target)
         expected = 0
-        enablePrint()
         self.assertEqual(code, expected)
         cleanup(target)
 
@@ -101,7 +82,8 @@ class TestIntegration(unittest.TestCase):
         target = "test/fixtures/profile_lib/correct_format_profile_yml.html"
         code = testValidation(action, target_data=target)
         expected = 0
-        enablePrint()
+        print(code)
+        print(expected)
         self.assertEqual(code, expected)
         cleanup(target)
 
@@ -116,7 +98,6 @@ class TestIntegration(unittest.TestCase):
             "/fixtures/correct_format_profile_yml" + config.PROFILE_EXT
         resultMarg = json.loads(pathlib.Path(resultMargLoc).read_text())
         resultSchema = json.loads(pathlib.Path(resultSchemaLoc).read_text())
-        enablePrint()
         self.assertEqual(code, expected)
         self.assertEqual(len(resultMarg.keys()), 3)
         self.assertEqual(sum(map(len, resultMarg.values())),
@@ -129,7 +110,6 @@ class TestIntegration(unittest.TestCase):
         target = "test/fixtures/profile_lib/wrong_format_profile_yml.html"
         code = testValidation(action, target_data=target)
         expected = -1
-        enablePrint()
         self.assertEqual(code, expected)
 
     def testCLILiveDataOnePageJSONLDToBeExtracted(self):
@@ -139,7 +119,6 @@ class TestIntegration(unittest.TestCase):
         staticJsonld = True
         code = testValidation(action, target_data=target, static_jsonld=staticJsonld)
         expected = expectedCode(target_data=target, static_jsonld=staticJsonld)
-        enablePrint()
         # print("expected:", expected)
         self.assertEqual(code, expected)
 
@@ -150,7 +129,6 @@ class TestIntegration(unittest.TestCase):
         code = testValidation(action, target_data=str(
             target), static_jsonld=staticJsonld)
         expected = expectedCode(target_data=target, static_jsonld=staticJsonld)
-        enablePrint()
         self.assertEqual(code, expected)
         
     def testCLILiveDataMultiPageMultiJSONLDToBeExtracted(self):
@@ -161,7 +139,6 @@ class TestIntegration(unittest.TestCase):
             target), static_jsonld=staticJsonld)
         expected = expectedCode(target_data=target, static_jsonld=staticJsonld)
 
-        enablePrint()
         self.assertEqual(code, expected)
 
     def testCLINQfileToConvert(self):
@@ -169,7 +146,6 @@ class TestIntegration(unittest.TestCase):
         target = pathlib.Path("test/fixtures/metadata_lib/format_NQuads/3.nq")
         code = testValidation(action, target_data=str(target))
         expected = 0
-        enablePrint()
         self.assertEqual(code, expected)
 
     def testCLINQDirToConvert(self):
@@ -177,7 +153,6 @@ class TestIntegration(unittest.TestCase):
         target = pathlib.Path("test/fixtures/metadata_lib/format_NQuads")
         code = testValidation(action, target_data=str(target))
         expected = 0
-        enablePrint()
         self.assertEqual(code, expected)
 
     def testCLINQfileToConvertValidate(self):
@@ -187,7 +162,6 @@ class TestIntegration(unittest.TestCase):
         code = testValidation(action, target_data=str(target), convert=convert)
         expected = expectedCode(target_data=target, convert=convert)
 
-        enablePrint()
         self.assertEqual(code, expected)
 
     def testCLINQDirToConvertValidate(self):
@@ -198,7 +172,6 @@ class TestIntegration(unittest.TestCase):
             target), convert=convert)
         expected = expectedCode(target_data=target, convert=convert)
 
-        enablePrint()
         self.assertEqual(code, expected)
 
     def testCLILiveDataOnePageJSONLDToBeExtractedCSV(self):
@@ -208,7 +181,6 @@ class TestIntegration(unittest.TestCase):
         csv = True
         code = testValidation(action, target_data=target, static_jsonld=staticJsonld,csv=csv)
         expected = expectedCode(target_data=target, static_jsonld=staticJsonld, csv=csv) #101
-        enablePrint()
         self.assertEqual(code, expected)
 
     def testCLIMetadataWithProfile(self):
@@ -218,7 +190,6 @@ class TestIntegration(unittest.TestCase):
         code = testValidation(action, target_data=target, profile=profileLoc)
         expected = expectedCode(
             target_data=target, profile=profileLoc)
-        enablePrint()
         self.assertEqual(code, expected)
 
     def testCLISitemapExtractor(self):
@@ -231,11 +202,9 @@ class TestIntegration(unittest.TestCase):
 
 
     def testCLIWebsiteExtractor(self):
-        blockPrint()
         action = "sitemap"
         target="https://disprot.org/"
         result = testValidation(action, target_data=target)
-        enablePrint()
         # click.echo("result" + str(result))
         cleanup(result)
 

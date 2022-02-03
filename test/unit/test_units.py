@@ -9,22 +9,6 @@ from src.Classes.validator import check_completeness
 from src.Classes.staticJSONLDExtractor import extract
 
 
-def blockPrint():
-    """Stops the output displaying on the terminal
-    """
-    global nullOutput
-    nullOutput = open(os.devnull, 'w')
-    sys.stdout = nullOutput
-
-
-def enablePrint():
-    """Lets the output displaying on the terminal
-    """
-    global nullOutput
-    nullOutput.close()
-    sys.stdout = sys.__stdout__
-
-
 class TestUnits(unittest.TestCase):
     def testYmlToDictError(self):
         # assert testYmlToDictError() is None
@@ -44,7 +28,6 @@ class TestUnits(unittest.TestCase):
             mapping,  "The mapping was not extracted")
         
     def testCheckCompletenessNum(self):
-        blockPrint()
         profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
         profileListDict = json.loads(profileListDictPath.read_text())
 
@@ -57,12 +40,10 @@ class TestUnits(unittest.TestCase):
                         "ComputationalWorkflow", "1.0-RELEASE", "num")
         propMinExist = str(len(set(existProperty).intersection(
             set(profileListDict["minimum"]))))
-        enablePrint()
         self.assertEqual(propMinExist,
                             result["Minimum"]["Implemented"])
 
     def testCheckCompletenessName(self):
-        blockPrint()
         profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
         profileListDict = json.loads(profileListDictPath.read_text())
 
@@ -75,12 +56,10 @@ class TestUnits(unittest.TestCase):
                         "ComputationalWorkflow", "1.0-RELEASE", "name")
         propMinExist = sorted(list(set(existProperty).intersection(
             set(profileListDict["minimum"]))))
-        enablePrint()
         self.assertListEqual(propMinExist,
                             result["Minimum"]["Implemented"])
 
     def testCheckCompletenessAll(self):
-        blockPrint()
         profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
         profileListDict = json.loads(profileListDictPath.read_text())
 
@@ -94,7 +73,6 @@ class TestUnits(unittest.TestCase):
         propMinExist = sorted(list(set(existProperty).intersection(
             set(profileListDict["minimum"]))))
         propMinExist.append("Total: "+str(len(propMinExist)))
-        enablePrint()
         self.assertListEqual(propMinExist,
                             result["Minimum"]["Implemented"])
         
