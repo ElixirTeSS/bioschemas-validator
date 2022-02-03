@@ -18,7 +18,7 @@ def lowerFirstLetter(string):
 # build a json-LD profile from information in a text file
 # as the validator is using profile from text file in form of python dict
     # read a profile data file into a list
-
+    
 
 def build_profile(path):
     try:
@@ -41,32 +41,24 @@ def build_profile(path):
         print_dict(dictMade, filepath)
         Draft7Validator.check_schema(dictMade)
         click.secho("Done", fg="green", file=config.OUTPUT_LOCATION_WRITE)
-        
-
         return 0
-    except KeyboardInterrupt:
+    except KeyboardInterrupt as exceptMessage:
         click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+        click.secho(f"Error: {exceptMessage}",
+                    fg="red",
+                    file=config.OUTPUT_LOCATION_WRITE)
         return -1
-    except FileNotFoundError:
-        errorMessage = str("The target data " + str(path) +
-                           " is not an existing file, please double check")
-        click.secho(errorMessage, fg='yellow',
+    except FileNotFoundError as exceptMessage:
+        errorMessage = f"The target data {path} is not an existing file, please double check"
+        click.secho(errorMessage,
+                    fg='yellow',
                     file=config.OUTPUT_LOCATION_WRITE)
-        # sys.exc_info() is a tuple of type
-        errorMessage = ""
-        for item in sys.exc_info():
-            errorMessage = errorMessage + str(item)
-
-        click.secho("Error:" + errorMessage, fg="red",
+        click.secho(f"Error: {exceptMessage}",
+                    fg="red",
                     file=config.OUTPUT_LOCATION_WRITE)
-    except:
-        errorMessage = ""
-        # sys.exc_info() is a tuple of type
-        for item in sys.exc_info():
-            errorMessage = errorMessage + str(item)
-
-        click.secho("Error:" + errorMessage, fg="red", file=config.OUTPUT_LOCATION_WRITE)
-
+        return -1
+    except Exception as exeptMessage:
+        click.secho("Error:" + exeptMessage, fg="red", file=config.OUTPUT_LOCATION_WRITE)
         return -1
 
 def read_definition():
