@@ -12,7 +12,7 @@ import csv
 import glob
 import os
 import pathlib
-import tqdm
+from tqdm import tqdm
 import click
 
 import src.Classes.config as config
