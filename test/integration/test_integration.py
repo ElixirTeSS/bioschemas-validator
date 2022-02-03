@@ -6,7 +6,6 @@ import unittest
 import pathlib
 import os
 import json
-import sys
 import shutil
 
 def testValidation(action="", target_data="", static_jsonld=False, csv=False, profile="N", convert=False, sitemap_convert=False):
@@ -199,7 +198,6 @@ class TestIntegration(unittest.TestCase):
         # click.echo("result" + str(result))
 
         cleanup(result)
-
 
     def testCLIWebsiteExtractor(self):
         action = "sitemap"

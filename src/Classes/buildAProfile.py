@@ -5,7 +5,6 @@ import itertools
 import json
 import pathlib
 import click
-import sys
 import src.Classes.config as config
 from jsonschema import Draft7Validator
 

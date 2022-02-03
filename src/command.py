@@ -111,7 +111,6 @@ def buildProfile(profile_to_make):
                 click.echo("---------------------------------",
                            file=config.OUTPUT_LOCATION_WRITE)
                 continue
-
     else:
         path = pathlib.Path(config.YML_LOC)
         totalProfileNum = len(list(path.rglob('*.html')))
