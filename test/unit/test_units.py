@@ -1,18 +1,14 @@
-from test.unit.test_profileBuilding import testSeparateSpecAndMapping
+from test.unit.profileBuilding import runSeparateSpecAndMapping
 import unittest
-import sys
 import json
 import pathlib
-import os
 
 from src.Classes.validator import check_completeness
-from src.Classes.staticJSONLDExtractor import extract
 
 
 class TestUnits(unittest.TestCase):
     def testYmlToDictError(self):
-        # assert testYmlToDictError() is None
-        specInfo, mapping = testSeparateSpecAndMapping(
+        specInfo, mapping = runSeparateSpecAndMapping(
             "test/fixtures/profile_lib/wrong_format_profile_yml.html")
         self.assertIsNone(
             specInfo, "The specification was extracted")
@@ -20,7 +16,7 @@ class TestUnits(unittest.TestCase):
             mapping, "The mapping extracted was extracted")
 
     def testYmlToDictCorrect(self):
-        specInfo, mapping = testSeparateSpecAndMapping(
+        specInfo, mapping = runSeparateSpecAndMapping(
             "test/fixtures/profile_lib/correct_format_profile_yml.html")
         self.assertIsNotNone(
             specInfo,  "The specification was not extracted")
@@ -75,8 +71,3 @@ class TestUnits(unittest.TestCase):
         propMinExist.append("Total: "+str(len(propMinExist)))
         self.assertListEqual(propMinExist,
                             result["Minimum"]["Implemented"])
-        
-
-
-if __name__ == '__main__':
-    unittest.main()
