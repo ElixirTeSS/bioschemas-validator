@@ -74,7 +74,6 @@ class TestIntegration(unittest.TestCase):
         code = testValidation(action, target_data=target)
         expected = 0
         self.assertEqual(code, expected)
-        cleanup(target)
 
     def testCLIBuildProfileCorrect(self):
         action = "buildprofile"
@@ -82,7 +81,6 @@ class TestIntegration(unittest.TestCase):
         code = testValidation(action, target_data=target)
         expected = 0
         self.assertEqual(code, expected)
-        cleanup(target)
 
     def testCLIBuildProfileMarginalityCorrect(self):
         action = "buildprofile"
@@ -99,8 +97,6 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(len(resultMarg.keys()), 3)
         self.assertEqual(sum(map(len, resultMarg.values())),
                          len(resultSchema["properties"].keys()))
-
-        cleanup(target)
 
     def testCLIBuildProfileError(self):
         action = "buildprofile"
