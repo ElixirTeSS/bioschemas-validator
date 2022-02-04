@@ -18,19 +18,19 @@ def lowerFirstLetter(string):
 # build a json-LD profile from information in a text file
 # as the validator is using profile from text file in form of python dict
     # read a profile data file into a list
-    
+
 
 def build_profile(path):
     try:
         global filepath
-        global outputName
         filepath = path
 
+        global outputName
         outputName = pathlib.Path(filepath.name).stem + config.PROFILE_EXT
-    #         filepath.parent.mkdir(parents=True, exist_ok=True)
-        file = filepath.read_text()
-        specInfo, mapping = separateSpecAndMapping(file)
-        # outfile = pag
+
+        profileFile = filepath.read_text()
+        specInfo, mapping = separateSpecAndMapping(profileFile)
+
         if specInfo is None or mapping is None:
             raise ex.WrongFormat
         read_definition()
@@ -44,13 +44,13 @@ def build_profile(path):
         click.secho(f"Error: {exceptMessage}",
                     fg="red",
                     file=config.OUTPUT_LOCATION_WRITE)
-        return -1 
+        return -1
     except KeyboardInterrupt as exceptMessage:
         click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
         click.secho(f"Error: {exceptMessage}",
                     fg="red",
                     file=config.OUTPUT_LOCATION_WRITE)
-        return -1
+        return -2
     except FileNotFoundError as exceptMessage:
         errorMessage = f"The target data {path} is not an existing file, please double check"
         click.secho(errorMessage,
@@ -59,10 +59,11 @@ def build_profile(path):
         click.secho(f"Error: {exceptMessage}",
                     fg="red",
                     file=config.OUTPUT_LOCATION_WRITE)
-        return -1
+        return -3
     except Exception as exeptMessage:
-        click.secho("Error:" + exeptMessage, fg="red", file=config.OUTPUT_LOCATION_WRITE)
-        return -1
+        click.secho(f"Error: {exeptMessage}", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+        print(f"Error: {exeptMessage}")
+        return -4
 
 def read_definition():
     global definitions
