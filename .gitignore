@@ -53,7 +53,7 @@ coverage.xml
 output.txt
 profile_json/fixtures
 profile_marginality/fixtures/
-
+profile_lib/fixtures
 # Translations
 *.mo
 *.pot
