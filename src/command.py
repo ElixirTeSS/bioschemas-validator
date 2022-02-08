@@ -20,7 +20,6 @@ import pandas as pd
 import rdflib
 import time
 
-
 @click.command()
 @click.argument('action', type=click.Choice(['validate', 'buildprofile', 'tojsonld', 'sitemap']))
 @click.option("--target_data",  default="",
@@ -128,7 +127,12 @@ def buildProfile(profile_to_make):
     return 0
 
 
-def validateData(target_data, static_jsonld=False, csv="N", profile="N", convert=False, sitemap_convert=False):
+def validateData(target_data,
+                 static_jsonld=False,
+                 csvNeeded=False,
+                 profile=None,
+                 convert=False,
+                 sitemap_convert=False):
     """Validate metadata using the information taken from the target_data path
 
     Args:
@@ -140,175 +144,114 @@ def validateData(target_data, static_jsonld=False, csv="N", profile="N", convert
         sitemap_convert(boolean): True if the url of the metadata need to be extrated from the sitemap or a webdomain
     """
     try:
-        fileDir = False
-        profileSpecific = False
         dataList = list()
-        csvNeeded = False
-        # returnCode = 0
-        if csv != "N":
-            csvNeeded = True
-        if profile != "N":
-            profileSpecific = True
-            # returnCode+= 3*100
+
+        # ----------------------------------------------------------------------
+        # Perform JSON_LD conversion, if requested
+
         if convert:
-            target_data = pathlib.Path(target_data)
-            target_data = toJsonLD(target_data, action="validate")
+            target_data_path = pathlib.Path(target_data)
+            target_data = toJsonLD(target_data_path, action="validate")
             if target_data == -1:
                 return -1
 
+        # ----------------------------------------------------------------------
+        # Perform sitemap conversion, if requested
+
+        if sitemap_convert:
+            # the target data will now be a path to a file with a list of urls that then needs to be extracted
+            target_data = sitemapExtract(target_data)
+
+        # ----------------------------------------------------------------------
+        # If either conversion was requested, extract the validation data
+
         if static_jsonld or sitemap_convert:
-            if sitemap_convert:
-                # the target data will now be a path to a file with a list of urls that then needs to be extracted
-                target_data = sitemapExtract(target_data)
             # depends on the target data, it could be a dir(if a dir was created), or a list(if the dir exist already)
-            newCommandFileName = extract(target_data)
-            if type(newCommandFileName) is list:
-                target_data = pathlib.Path(target_data)
-            target_data = newCommandFileName
+            target_data = extract(target_data)
 
             if target_data == "":
-                click.echo("No data to be validated.",
-                           file=config.OUTPUT_LOCATION_WRITE)
+                click.echo("No data to be validated.", file=config.OUTPUT_LOCATION_WRITE)
                 return -1
             
-        if profileSpecific:
-            schema, schemaPath = path_to_dict(pathlib.Path(profile))
+        # ----------------------------------------------------------------------
+        # Form target data list
 
-        
-
-        if type(target_data) is not list:
-            if os.path.isdir(target_data):
-                fileDir = True
-                dataList = pathlib.Path(target_data).glob("*"+config.METADATA_EXT)
-                # returnCode += 3*10
-            elif os.path.isfile(target_data):
-                click.echo(target_data + " is a file",
-                           file=config.OUTPUT_LOCATION_WRITE)
-                f = pathlib.Path(target_data).open()
-                dataList = f.readlines()
-                # returnCode += 1*10
-                # If the target metadata is the path to the metadata itself
-                if "{" in dataList[0] or pathlib.Path(target_data).suffix == config.METADATA_EXT:
-    
-                    click.echo("The target metadata is " +
-                               str(target_data), file=config.OUTPUT_LOCATION_WRITE)
-                    data, dataPath = path_to_dict(pathlib.Path(target_data))
-                    if csvNeeded:
-                        blockPrint()
-                    click.echo("###########Start Validation#############",
-                               file=config.OUTPUT_LOCATION_WRITE)
-                    if profileSpecific:
-                        click.echo("Validating againest ", schemaPath,
-                                   file=config.OUTPUT_LOCATION_WRITE)
-
-                        result = validate(data, csv, schema, schemaPath)
-                    else:
-                        result = validate(data, csv)
-
-                    if csvNeeded:
-                        enablePrint()
-                        csvWriter(result, target_data)
-                    click.echo("###########End Validation#############\n",
-                               file=config.OUTPUT_LOCATION_WRITE)
-                    return 
-                    # end of output if a single file is being validated
-
-                click.echo(target_data, file=config.OUTPUT_LOCATION_WRITE)
-
-
-            else:
-                dataList.append(target_data)
-
-
-
-        elif type(target_data) is list:
+        if type(target_data) is list:
             click.echo(target_data[0], file=config.OUTPUT_LOCATION_WRITE)
             dataList = target_data
+        elif os.path.isdir(target_data):
+            dataList = pathlib.Path(target_data).glob("*"+config.METADATA_EXT)
+        elif os.path.isfile(target_data):
+            click.echo(target_data + " is a file", file=config.OUTPUT_LOCATION_WRITE)
+            with pathlib.Path(target_data).open() as f:
+                dataList = f.readlines()
+
+                # If the target metadata is the path to the metadata itself
+                if ("{" in dataList[0]) or (pathlib.Path(target_data).suffix == config.METADATA_EXT):
+                    click.echo(f"The target metadata is {target_data}", file=config.OUTPUT_LOCATION_WRITE)
+                    data, dataPath = path_to_dict(pathlib.Path(target_data))
+                    click.echo("###########Start Validation#############", file=config.OUTPUT_LOCATION_WRITE)
+                    result = validate(data, csv, profile)
+                    if csvNeeded:
+                        csvWriter(result, target_data)
+                        click.echo("###########End Validation#############\n", file=config.OUTPUT_LOCATION_WRITE)
+                        return 0
+                    # end of output if a single file is being validated
+                else:
+                    dataList.append(target_data)
+                click.echo(target_data, file=config.OUTPUT_LOCATION_WRITE)
         else:
-            click.echo("The path is not a directory or a file.",
-                       file=config.OUTPUT_LOCATION_WRITE)
+            click.echo("The path is not a directory or a file.", file=config.OUTPUT_LOCATION_WRITE)
             return -1
-    
+
+        # ----------------------------------------------------------------------
+        # Process target data list
 
         dataName = ""
-
         for line in dataList:
+            click.echo(f"Validating: {line}", file=config.OUTPUT_LOCATION_WRITE)
+         
             if type(line) is not str:
                 line = str(line)
-            click.echo("Validating: " + line, file=config.OUTPUT_LOCATION_WRITE)
-            if type(line) is str and len(line.split(" "))>1:
+                
+            if len(line.split(" ")) > 1:
                 containProfile = True
-                schemaName = line.split(" ")[0]
+                profile = line.split(" ")[0]
                 dataName = line.split(" ")[1].strip()
             else:
                 dataName = line
                 containProfile = False
+
             if type(dataName) is str:
                 dataName = pathlib.Path(dataName.rstrip())
 
-            click.echo("###########Start Validation#############",
-                       file=config.OUTPUT_LOCATION_WRITE)
-            if csvNeeded:
-                blockPrint()
+            click.echo("####n#######Start Validation#############", file=config.OUTPUT_LOCATION_WRITE)
+            click.echo(f"{profile} {dataName}", file=config.OUTPUT_LOCATION_WRITE)
 
-            if fileDir is False and containProfile is True:
-                click.echo(schemaName, dataName,
-                           file=config.OUTPUT_LOCATION_WRITE)
+            if (containProfile and not os.path.isdir(target_data)) or (not containProfile):
                 data, dataPath = path_to_dict(dataName)
-                if profileSpecific:
-                    click.echo("Validating againest " + str(schemaPath), file = config.OUTPUT_LOCATION_WRITE)
-
-                    result = validate(data, csv, schema, schemaPath)
-                else:
-                    schema , schemaPath = path_to_dict(schemaName)
-
-    #             click.echo(schemaName)
-                    result = validate(data,csv, schema, schemaPath)
-            elif containProfile is False:
-    #             dataName = line.strip()
-    #             if type(dataName) is str:
-    #                 dataName = pathlib.Path(dataName)
-                data, dataPath = path_to_dict(dataName)
-                if profileSpecific:
-                    click.echo("Validating againest " + str(schemaPath),
-                               file=config.OUTPUT_LOCATION_WRITE)
-                    result = validate(data, csv, schema, schemaPath)
-                else:
-                    result = validate(data, csv)
+                result = validate(data, csv, profile)
+            else:
+                click.echo("Invalid data type, validation aborted", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+                return -1
+                
             if csvNeeded:
-                enablePrint()
                 # new = pd.DataFrame.from_dict(result)
                 csvWriter(result, dataName)
-            click.echo("###########End Validation#############\n",
-                       file=config.OUTPUT_LOCATION_WRITE)
+
+            click.echo("###########End Validation#############\n", file=config.OUTPUT_LOCATION_WRITE)
         if csvNeeded:
             csvBulkWriter(dataName)
-        if type(target_data) is not list and os.path.isfile(target_data):
-                f.close()
-        return 0 # returnCode
+
+        return 0  # returnCode
     except KeyboardInterrupt:
-        click.secho("Program stopped", fg="red",
-                    file=config.OUTPUT_LOCATION_WRITE)
+        click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
         return -1
-    except FileNotFoundError:
-        click.secho("Missing file error, please double check", fg="red",
-                    file=config.OUTPUT_LOCATION_WRITE)
-
-        # sys.exc_info() is a tuple of type
-        errorMessage = ""
-        for item in sys.exc_info():
-            errorMessage = errorMessage + str(item)
-
-        click.secho("Error:" + errorMessage, fg="red",
-                    file=config.OUTPUT_LOCATION_WRITE)
-    except:
-        errorMessage = ""
-        # sys.exc_info() is a tuple of type
-        for item in sys.exc_info():
-            errorMessage = errorMessage + str(item)
-
-        click.secho("Error:" + errorMessage, fg="red",
-                    file=config.OUTPUT_LOCATION_WRITE)
+    except FileNotFoundError as errorMessage:
+        click.secho("Missing file error, please double check", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+        click.secho(f"Error: {errorMessage}", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+    except Exception as errorMessage:
+        click.secho(f"Error: {errorMessage}", fg="red", file=config.OUTPUT_LOCATION_WRITE)
         return -1
 
 def toJsonLD(target_data, action):
@@ -381,24 +324,6 @@ def toJsonLD(target_data, action):
         click.echo("There is an error with the file metadata file path, please double check")
         return -1
 
-
-def blockPrint():
-    """Stops the output displaying on the terminal
-    """
-    global nullOutput
-    nullOutput = open(os.devnull, 'w')
-    sys.stdout = nullOutput
-
-# Restore
-
-
-def enablePrint():
-    """Lets the output displaying on the terminal
-    """
-    global nullOutput
-    nullOutput.close()
-    sys.stdout = sys.__stdout__
-
 def csvWriter(resultdict, name):
     """Takes the resultdict which is the validation result on validation and save it to a csv file.
 
@@ -413,6 +338,7 @@ def csvWriter(resultdict, name):
         return 0
     elif resultdict != None:
         # click.echo(resultdict)
+        print(resultdict)
 
         resultdict["File Name"] = name
         for keyName in resultdict.keys():

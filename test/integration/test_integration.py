@@ -8,20 +8,20 @@ import os
 import json
 import shutil
 
-def testValidation(action="", target_data="", static_jsonld=False, csv=False, profile="N", convert=False, sitemap_convert=False):
+def testValidation(action="", target_data="", static_jsonld=False, csvNeeded=False, profile=None, convert=False, sitemap_convert=False):
     if action == 'buildprofile':
         return command.buildProfile(target_data)
     elif action == 'validate':
-        return command.validateData(target_data, static_jsonld, csv, profile, convert, sitemap_convert)
+        return command.validateData(target_data, static_jsonld, csvNeeded, profile, convert, sitemap_convert)
     elif action == 'tojsonld':
         return command.toJsonLD(target_data, action)
     elif action == "sitemap":
         return command.sitemapExtract(target_data)
 
 
-def expectedCode(target_data="", static_jsonld=False, csv=False, profile="N", convert=False):
+def expectedCode(target_data="", static_jsonld=False, csvNeeded=False, profile=None, convert=False):
     code = 0
-    if profile != "N":
+    if profile != None:
         code += 3*100
     if convert:
         code += 2*100
@@ -29,7 +29,7 @@ def expectedCode(target_data="", static_jsonld=False, csv=False, profile="N", co
         code += 1*100
         if type(extract(str(target_data))) is dir:
             code += 3*10
-    if csv:
+    if csvNeeded:
         code += 1
         
     target_data = pathlib.Path(target_data)
@@ -172,8 +172,8 @@ class TestIntegration(unittest.TestCase):
         target = "https://workflowhub.eu/workflows/137"
         staticJsonld = True
         csv = True
-        code = testValidation(action, target_data=target, static_jsonld=staticJsonld,csv=csv)
-        expected = expectedCode(target_data=target, static_jsonld=staticJsonld, csv=csv) #101
+        code = testValidation(action, target_data=target, static_jsonld=staticJsonld, csvNeeded=csv)
+        expected = expectedCode(target_data=target, static_jsonld=staticJsonld, csvNeeded=csv) #101
         self.assertEqual(code, expected)
 
     def testCLIMetadataWithProfile(self):

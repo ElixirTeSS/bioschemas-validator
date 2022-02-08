@@ -9,10 +9,16 @@ import click
 
 semanticPairDatePath = pathlib.Path("./src/Classes/semanticPairDate.txt")
 # validate a data using a schema
-def validate(data, csv, schema = None, profilePath = ""):
+def validate(data, csv, profile):
     global errorPaths
     global existProperty
     global diffKeys
+
+    profilePath = ""
+    schema, schemaPath = None, None
+    if profile is not None:
+        schema, schemaPath = path_to_dict(pathlib.Path(profile))
+
     existProperty = list(data.keys())
     errorPaths = list()
     correctData = data
