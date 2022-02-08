@@ -1,26 +1,22 @@
 from usp.tree import sitemap_tree_for_homepage
 import pathlib
 from urllib.parse import urlparse
-import click
-import src.Classes.config as config
+import src.log as log
+
 
 def extractWebsite(websiteLink, printDetail=False):
-    outputName = pathlib.Path(urlparse(websiteLink).netloc+".txt")
+    outputName = pathlib.Path(f"{urlparse(websiteLink).netloc}.txt")
 
     if outputName.exists():
         outputName.unlink()
-    f = outputName.open(mode = "x")
 
-    click.echo("Output location: " + str(outputName),
-          file=config.OUTPUT_LOCATION_WRITE)
-
-    tree = sitemap_tree_for_homepage(websiteLink)
-    for page in tree.all_pages():
-        f.write(page.url + "\n")
-        if printDetail:
-            click.echo(str(page.url),
-                       file=config.OUTPUT_LOCATION_WRITE)
-    f.close()
+    log.info(f"Output location: {outputName}")
+    with outputName.open(mode="x") as output_file:
+        tree = sitemap_tree_for_homepage(websiteLink)
+        for page in tree.all_pages():
+            output_file.write(page.url + "\n")
+            if printDetail:
+                log.info(f"{page.url}")
     return(outputName)
 
 
@@ -28,22 +24,6 @@ def isUrl(url):
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc, result.path])
-    except:
-        click.echo("This is not a valid url, please double check.",
-                   file=config.OUTPUT_LOCATION_WRITE)
+    except Exception as errorMessage:
+        log.info(f"Not a valid url, please double check. {errorMessage}")
         return False
-
-# if len(sys.argv) < 2:
-#     print("Missing website url")
-#     exit
-
-
-# websiteLink =  sys.argv[1]
-# printDetail = False
-# if len(sys.argv) == 3 and sys.argv[2] == "-p":
-#     printDetail = True
-
-# if not isUrl(websiteLink):
-#     click.echo("This is not a valid url, please double check.")
-# else:
-#     extractWebsite(websiteLink, printDetail)

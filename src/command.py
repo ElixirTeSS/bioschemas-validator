@@ -16,6 +16,7 @@ from tqdm import tqdm
 import click
 
 import src.Classes.config as config
+import src.log as log
 import pandas as pd
 import rdflib
 import time
@@ -36,35 +37,35 @@ import time
               help="Wether the data is a sitemap or a web domain, if raised the url will be extracted from the sitemap")
 
 
-
 def choose(action, target_data, static_jsonld, csv, profile, convert, sitemap_convert):
+    log.stdout(f'Action: {action}')
+
+    # --------------------------------------------------------------------------
+    # Check data has been specified
+
+    if target_data == "":
+        log.stdout("Missing target_data parameter")
+        exit()
+
+    # --------------------------------------------------------------------------
+    # Perform action
+
     if action == 'buildprofile':
-        click.echo('Action: %s' % action)
         if target_data == "":
             buildProfile('all')
         else:
             buildProfile(target_data)
     elif action == 'validate':
-            click.echo('Action: %s' % action)
-            if target_data == "":
-                click.echo("Missing target_data parameter")
-                exit()
-            validateData(target_data, static_jsonld, csv,
-                         profile, convert, sitemap_convert)
-
+        validateData(target_data, static_jsonld, csv,
+                     profile, convert, sitemap_convert)
     elif action == 'tojsonld':
-            click.echo('Action: %s' % action)
-            if target_data == "":
-                click.echo("Missing target_data parameter")
-                exit()
-            toJsonLD(target_data, action)
-
+        toJsonLD(target_data, action)
     elif action == "sitemap":
-        click.echo('Action: %s' % action)
-
         sitemapExtract(target_data)
-    
-    
+
+    # --------------------------------------------------------------------------
+    # Exit
+
 
 def sitemapExtract(target_data):
     if pathlib.Path(target_data).suffix == ".xml":
@@ -85,44 +86,37 @@ def buildProfile(profile_to_make):
     if profile_to_make != 'all':
         path = pathlib.Path(profile_to_make)
         if path.suffix == ".html":
-            click.echo(path, file=config.OUTPUT_LOCATION_WRITE)
+            log.info(path)
             code = build_profile(path)
-            click.echo("---------------------------------",
-                       file=config.OUTPUT_LOCATION_WRITE)
+            log.info("---------------------------------")
             return code
         elif path.suffix == ".txt":
             with path.open() as f:
                 profileList = f.readlines()
-            # if len(profileList) == 0:
-            #     click.secho(
-            #         "There is no file to be converted in " + config.YML_LOC, fg='yellow', file=config.OUTPUT_LOCATION_WRITE)
+
             start_time = time.time()
             totalProfileNum = len(profileList)
-            i = 0
-            for line in profileList:
-                i = i + 1
-                click.echo(line, file=config.OUTPUT_LOCATION_WRITE)
-                build_profile(pathlib.Path(line.rstrip()))
-                elapsed_time = time.time() - start_time
 
-                click.echo(tqdm.format_meter(i, totalProfileNum, elapsed_time))
-                sys.stdout.flush()
-                click.echo("---------------------------------",
-                           file=config.OUTPUT_LOCATION_WRITE)
+            for ii, line in enumerate(profileList):
+                build_profile(pathlib.Path(line.rstrip()))
+
+                log.info(line)
+                elapsed_time = time.time() - start_time
+                log.stdout(tqdm.format_meter(ii, totalProfileNum, elapsed_time))
+                log.info("---------------------------------")
                 continue
     else:
         path = pathlib.Path(config.YML_LOC)
         totalProfileNum = len(list(path.rglob('*.html')))
-        i = 0
+        
         start_time = time.time()
-        for line in path.glob('**/*.html'):
-            i = i + 1
-            click.echo(line,  file=config.OUTPUT_LOCATION_WRITE)
+        for ii, line in enumerate(path.glob('**/*.html')):
             build_profile(line)
+
+            log.info(line)
             elapsed_time = time.time() - start_time
-            click.echo(tqdm.format_meter(i, totalProfileNum, elapsed_time))
-            click.echo("---------------------------------",
-                       file=config.OUTPUT_LOCATION_WRITE)
+            log.stdout(tqdm.format_meter(ii, totalProfileNum, elapsed_time))
+            log.info("---------------------------------")
 
     return 0
 
@@ -170,38 +164,38 @@ def validateData(target_data,
             target_data = extract(target_data)
 
             if target_data == "":
-                click.echo("No data to be validated.", file=config.OUTPUT_LOCATION_WRITE)
+                log.info("No data to be validated.")
                 return -1
             
         # ----------------------------------------------------------------------
         # Form target data list
 
         if type(target_data) is list:
-            click.echo(target_data[0], file=config.OUTPUT_LOCATION_WRITE)
+            log.info(target_data[0])
             dataList = target_data
         elif os.path.isdir(target_data):
             dataList = pathlib.Path(target_data).glob("*"+config.METADATA_EXT)
         elif os.path.isfile(target_data):
-            click.echo(target_data + " is a file", file=config.OUTPUT_LOCATION_WRITE)
+            log.info(target_data + " is a file")
             with pathlib.Path(target_data).open() as f:
                 dataList = f.readlines()
 
                 # If the target metadata is the path to the metadata itself
                 if ("{" in dataList[0]) or (pathlib.Path(target_data).suffix == config.METADATA_EXT):
-                    click.echo(f"The target metadata is {target_data}", file=config.OUTPUT_LOCATION_WRITE)
+                    log.info(f"The target metadata is {target_data}")
                     data, dataPath = path_to_dict(pathlib.Path(target_data))
-                    click.echo("###########Start Validation#############", file=config.OUTPUT_LOCATION_WRITE)
+                    log.info("###########Start Validation#############")
                     result = validate(data, csv, profile)
                     if csvNeeded:
                         csvWriter(result, target_data)
-                        click.echo("###########End Validation#############\n", file=config.OUTPUT_LOCATION_WRITE)
+                        log.info("###########End Validation#############\n")
                         return 0
                     # end of output if a single file is being validated
                 else:
                     dataList.append(target_data)
-                click.echo(target_data, file=config.OUTPUT_LOCATION_WRITE)
+                log.info(target_data)
         else:
-            click.echo("The path is not a directory or a file.", file=config.OUTPUT_LOCATION_WRITE)
+            log.info("The path is not a directory or a file.")
             return -1
 
         # ----------------------------------------------------------------------
@@ -209,7 +203,7 @@ def validateData(target_data,
 
         dataName = ""
         for line in dataList:
-            click.echo(f"Validating: {line}", file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"Validating: {line}")
          
             if type(line) is not str:
                 line = str(line)
@@ -225,21 +219,21 @@ def validateData(target_data,
             if type(dataName) is str:
                 dataName = pathlib.Path(dataName.rstrip())
 
-            click.echo("####n#######Start Validation#############", file=config.OUTPUT_LOCATION_WRITE)
-            click.echo(f"{profile} {dataName}", file=config.OUTPUT_LOCATION_WRITE)
+            log.info("####n#######Start Validation#############")
+            log.info(f"{profile} {dataName}")
 
             if (containProfile and not os.path.isdir(target_data)) or (not containProfile):
                 data, dataPath = path_to_dict(dataName)
                 result = validate(data, csv, profile)
             else:
-                click.echo("Invalid data type, validation aborted", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+                log.error("Invalid data type, validation aborted")
                 return -1
                 
             if csvNeeded:
                 # new = pd.DataFrame.from_dict(result)
                 csvWriter(result, dataName)
 
-            click.echo("###########End Validation#############\n", file=config.OUTPUT_LOCATION_WRITE)
+            log.info("###########End Validation#############\n")
         if csvNeeded:
             csvBulkWriter(dataName)
 
@@ -268,31 +262,19 @@ def toJsonLD(target_data, action):
         nqFiles = target_data.iterdir()
         resultDictPathList = list()
         # file is a Path not a str
-        for file in nqFiles:
-            if file.suffix == ".jsonld":
-                click.echo(str(file) + " is a JSONLD file already.",
-                           file=config.OUTPUT_LOCATION_WRITE)
+        for input_file in nqFiles:
+            if input_file.suffix == ".jsonld":
+                log.info(f"{input_file} is a JSONLD file already.")
                 continue
-            click.echo("Converting "+str(file)+" to JSON-LD...",
-                       file=config.OUTPUT_LOCATION_WRITE)
-            # filePath = target_data / file
-            # filePath = file
+            log.info(f"Converting {input_file} to JSON-LD...")
+
             # guess RDF serialization based on file suffix
-            dataFormat = rdflib.util.guess_format(str(file))
-            if dataFormat == None:
-                click.echo("The format of this file can not be determined as it is not an RDF type.",
-                           file=config.OUTPUT_LOCATION_WRITE)
+            dataFormat = rdflib.util.guess_format(str(input_file))
+            if dataFormat is None:
+                log.info("The format of this file can not be determined as it is not an RDF type.")
                 continue
-            # if dataFormat == ""
-            # click.echo("Original format: " + dataFormat)
-            resultDictList = convertformattoJSONLD(
-                file, dataFormat)
-            # click.echo("resultFiles" + str(type(resultDictList)))
-            # for resultFile in resultDictList:
-            #     resultFile.rename(resultDir.joinpath(resultFile.name))
-            # resultDictList = open(resultFile, "r").readlines()
-            # click.echo(str(file) + " converted and saved in " +
-                #   str(resultDictList))
+
+            resultDictList = convertformattoJSONLD(input_file, dataFormat)
             for resultFile in resultDictList:
                 resultDictPathList.append(resultFile)
         if action == "validate":
@@ -301,27 +283,22 @@ def toJsonLD(target_data, action):
             return 0
     elif target_data.is_file():
         if target_data.suffix == ".jsonld":
-            click.echo("This is a JSONLD file already.",
-                       file=config.OUTPUT_LOCATION_WRITE)
+            log.info("This is a JSONLD file already.")
             return [target_data]
-        file = str(target_data)
-        click.echo("Converting " + file + " to JSON-LD...",
-                   file=config.OUTPUT_LOCATION_WRITE)
-        dataFormat = rdflib.util.guess_format(file)
-        if dataFormat == None:
-            click.echo("The format of this file can not be determined as it is not an RDF type.",
-                       file=config.OUTPUT_LOCATION_WRITE)
+        target_file = str(target_data)
+        log.info(f"Converting {target_file} to JSON-LD...")
+        dataFormat = rdflib.util.guess_format(target_file)
+        if dataFormat is None:
+            log.info("The format of this file can not be determined as it is not an RDF type.")
             exit()
-        resultDictList = convertformattoJSONLD(
-            file, dataFormat)
-        # click.echo(file + " converted and saved in " + str(resultDictList))
+        resultDictList = convertformattoJSONLD(target_file, dataFormat)
         if action == "validate":
             return resultDictList
         else:
             return 0
 
     else:
-        click.echo("There is an error with the file metadata file path, please double check")
+        log.error("There is an error with the file metadata file path, please double check")
         return -1
 
 def csvWriter(resultdict, name):
@@ -332,14 +309,9 @@ def csvWriter(resultdict, name):
         name (string): The name of the file that the validation report is for
     """
     if resultdict == 0 or None:
-        click.echo("This profile has no list of properties and marginality. No csv is made",
-                   file=config.OUTPUT_LOCATION_WRITE)
-
+        log.info("This profile has no list of properties and marginality. No csv is made")
         return 0
-    elif resultdict != None:
-        # click.echo(resultdict)
-        print(resultdict)
-
+    elif resultdict is not None:
         resultdict["File Name"] = name
         for keyName in resultdict.keys():
             if keyName == "Minimum" or keyName == "Recommended" or keyName == "Optional":
@@ -347,8 +319,6 @@ def csvWriter(resultdict, name):
                 for k, v in resultdict[keyName].items():
                     newString = newString + "\n" + k + ": " + str(v)
                 resultdict[keyName] = newString.strip()
-
-        # click.echo(resultdict)
 
         if type(name) is str:
             name = pathlib.Path(name)
@@ -360,8 +330,7 @@ def csvWriter(resultdict, name):
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows([resultdict])
-            click.echo("CSV file location: " + name + ".csv",
-                       file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"CSV file location: {name}.csv")
 
         return 1
 
@@ -374,28 +343,23 @@ def csvBulkWriter(name):
     """
     if type(name) is str:
         name = pathlib.Path(name)
-    click.echo(name,
-               file=config.OUTPUT_LOCATION_WRITE)
+    log.info(name)
     path = name.parent
     all_files = glob.glob(str(path.joinpath("*.csv")))
     if len(all_files) == 0:
-        click.echo("There is no csv file available in path "+str(path)+".",
-                   file=config.OUTPUT_LOCATION_WRITE)
+        log.info(f"There is no csv file available in path {path}.")
         return
     df_from_each_file = (pd.read_csv(f, sep=',') for f in all_files)
     df_merged = pd.concat(df_from_each_file, ignore_index=True)
     resultPath = path.joinpath("mergedResult.csv")
     if resultPath.exists():
-        click.echo(str(resultPath) + "exist already", file=config.OUTPUT_LOCATION_WRITE)
+        log.info(f"{resultPath} exist already")
         resultPath.unlink()
         if resultPath.exists() is False:
-            click.echo("It has been deleted",
-                       file=config.OUTPUT_LOCATION_WRITE)
-    # path.joinpath("mergedResult.csv").unlink(missing_ok=True)
+            log.info("It has been deleted")
 
     df_merged.to_csv(str(resultPath))
-    click.echo("Merged CSV file location: " + str(resultPath),
-               file=config.OUTPUT_LOCATION_WRITE)
+    log.info(f"Merged CSV file location: {resultPath}")
 
 if __name__ == '__main__':
     choose()
