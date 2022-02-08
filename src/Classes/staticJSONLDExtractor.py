@@ -2,7 +2,6 @@ import extruct
 import requests
 import json
 import os
-import click
 from w3lib.html import get_base_url
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
