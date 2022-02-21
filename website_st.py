@@ -5,7 +5,6 @@ import streamlit as st
 import web.website_st_callbacks as cb
 
 # Library imports
-import base64
 
 # -------------------------------------------------------------------------
 # Set site wide configuration
