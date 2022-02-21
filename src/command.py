@@ -21,6 +21,7 @@ import pandas as pd
 import rdflib
 import time
 
+
 @click.command()
 @click.argument('action', type=click.Choice(['validate', 'buildprofile', 'tojsonld', 'sitemap']))
 @click.option("--target_data",  default="",
@@ -75,9 +76,9 @@ def sitemapExtract(target_data):
 
 
 def buildProfile(profile_to_make):
-    """ROUTE ONE 
+    """ROUTE ONE
         The first step for using this validation suite. 
-        This will build the JSON schema for Bioschema profiles necessary for validation 
+        This will build the JSON schema for Bioschema profiles necessary for validation
 
     Args:
         profile_to_make (string): A path to a file with the list of profile YML file that want to build instead of all the profile in config.YML_LOC
@@ -179,19 +180,7 @@ def validateData(target_data,
             log.info(target_data + " is a file")
             with pathlib.Path(target_data).open() as f:
                 dataList = f.readlines()
-
-                # If the target metadata is the path to the metadata itself
-                if ("{" in dataList[0]) or (pathlib.Path(target_data).suffix == config.METADATA_EXT):
-                    log.info(f"The target metadata is {target_data}")
-                    data, dataPath = path_to_dict(pathlib.Path(target_data))
-                    log.info("###########Start Validation#############")
-                    result = validate(data, csv, profile)
-                    if csvNeeded:
-                        csvWriter(result, target_data)
-                        log.info("###########End Validation#############\n")
-                        return 0
-                    # end of output if a single file is being validated
-                else:
+                if not targetIsMetadataPath:
                     dataList.append(target_data)
                 log.info(target_data)
         else:
@@ -204,26 +193,34 @@ def validateData(target_data,
         dataName = ""
         for line in dataList:
             log.info(f"Validating: {line}")
-         
+
             if type(line) is not str:
                 line = str(line)
-                
+
+            # ------------------------------------------------------------------
+            # Parse line to find if it specifies a profile
+
             if len(line.split(" ")) > 1:
                 containProfile = True
                 profile = line.split(" ")[0]
                 dataName = line.split(" ")[1].strip()
             else:
-                dataName = line
                 containProfile = False
+                dataName = line
 
             if type(dataName) is str:
                 dataName = pathlib.Path(dataName.rstrip())
 
+            # ------------------------------------------------------------------
+            # Begin validating
+
             log.info("####n#######Start Validation#############")
             log.info(f"{profile} {dataName}")
-
-            if (containProfile and not os.path.isdir(target_data)) or (not containProfile):
-                data, dataPath = path_to_dict(dataName)
+        
+            if (targetIsMetadataPath(line, dataName) or
+                ((containProfile and not os.path.isdir(target_data)) or (not containProfile))
+                ):
+                data, dataPath = path_to_dict(pathlib.Path(dataName))
                 result = validate(data, csv, profile)
             else:
                 log.error("Invalid data type, validation aborted")
@@ -360,6 +357,12 @@ def csvBulkWriter(name):
 
     df_merged.to_csv(str(resultPath))
     log.info(f"Merged CSV file location: {resultPath}")
+
+    
+def targetIsMetadataPath(line, dataName):
+    # If the target metadata is the path to the metadata itself
+    return (("{" in line[0]) or (dataName.suffix == config.METADATA_EXT))
+
 
 if __name__ == '__main__':
     choose()
