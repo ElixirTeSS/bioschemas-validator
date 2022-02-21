@@ -110,29 +110,26 @@ class TestIntegration(unittest.TestCase):
         action = "validate"
         target = "https://workflowhub.eu/workflows/137"
         staticJsonld = True
-        code = testValidation(action, target_data=target, static_jsonld=staticJsonld)
+        result = testValidation(action, target_data=target, static_jsonld=staticJsonld)
         expected = expectedCode(target_data=target, static_jsonld=staticJsonld)
         # print("expected:", expected)
-        self.assertEqual(code, expected)
+        self.assertEqual(result.code, expected)
 
     def testCLILiveDataMultiPageJSONLDToBeExtracted(self):
         action = "validate"
         target = pathlib.Path("test/fixtures/metadata_lib/static_jsonld_url_1to1.txt")
         staticJsonld = True
-        code = testValidation(action, target_data=str(
-            target), static_jsonld=staticJsonld)
+        result = testValidation(action, target_data=str(target), static_jsonld=staticJsonld)
         expected = expectedCode(target_data=target, static_jsonld=staticJsonld)
-        self.assertEqual(code, expected)
+        self.assertEqual(result.code, expected)
         
     def testCLILiveDataMultiPageMultiJSONLDToBeExtracted(self):
         action = "validate"
         target = pathlib.Path("test/fixtures/metadata_lib/static_jsonld_url_1toN.txt")
         staticJsonld = True
-        code = testValidation(action, target_data=str(
-            target), static_jsonld=staticJsonld)
+        result = testValidation(action, target_data=str(target), static_jsonld=staticJsonld)
         expected = expectedCode(target_data=target, static_jsonld=staticJsonld)
-
-        self.assertEqual(code, expected)
+        self.assertEqual(result.code, expected)
 
     def testCLINQfileToConvert(self):
         action = "tojsonld"
@@ -152,38 +149,34 @@ class TestIntegration(unittest.TestCase):
         action = "validate"
         target = pathlib.Path("test/fixtures/metadata_lib/format_NQuads/3.nq")
         convert = True
-        code = testValidation(action, target_data=str(target), convert=convert)
+        result = testValidation(action, target_data=str(target), convert=convert)
         expected = expectedCode(target_data=target, convert=convert)
-
-        self.assertEqual(code, expected)
+        self.assertEqual(result.code, expected)
 
     def testCLINQDirToConvertValidate(self):
         action = "validate"
         target = pathlib.Path("test/fixtures/metadata_lib/format_NQuads")
         convert = True
-        code = testValidation(action, target_data=str(
-            target), convert=convert)
+        result = testValidation(action, target_data=str(target), convert=convert)
         expected = expectedCode(target_data=target, convert=convert)
-
-        self.assertEqual(code, expected)
+        self.assertEqual(result.code, expected)
 
     def testCLILiveDataOnePageJSONLDToBeExtractedCSV(self):
         action = "validate"
         target = "https://workflowhub.eu/workflows/137"
         staticJsonld = True
         csv = True
-        code = testValidation(action, target_data=target, static_jsonld=staticJsonld, csvNeeded=csv)
+        result = testValidation(action, target_data=target, static_jsonld=staticJsonld, csvNeeded=csv)
         expected = expectedCode(target_data=target, static_jsonld=staticJsonld, csvNeeded=csv) #101
-        self.assertEqual(code, expected)
+        self.assertEqual(result.code, expected)
 
     def testCLIMetadataWithProfile(self):
         action = "validate"
         target = "test/fixtures/metadata_lib/dataset_metadata"
         profileLoc = "profile_json/Dataset/0.3-RELEASE-2019_06_14.json"
-        code = testValidation(action, target_data=target, profile=profileLoc)
-        expected = expectedCode(
-            target_data=target, profile=profileLoc)
-        self.assertEqual(code, expected)
+        result = testValidation(action, target_data=target, profile=profileLoc)
+        expected = expectedCode(target_data=target, profile=profileLoc)
+        self.assertEqual(result.code, expected)
 
     def testCLISitemapExtractor(self):
         action = "sitemap"

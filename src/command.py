@@ -1,5 +1,3 @@
-import sys
-
 from src.Classes.staticJSONLDExtractor import extract
 from src.Classes.formatToJSONLD import convertformattoJSONLD
 from src.Classes.validator import validate
@@ -17,6 +15,8 @@ import click
 
 import src.Classes.config as config
 import src.log as log
+from src.result import Result
+
 import pandas as pd
 import rdflib
 import time
@@ -36,8 +36,6 @@ import time
               help="A URL, A file with the URLs of the webpages or HTML files in local")
 @click.option("--sitemap_convert", is_flag=True,
               help="Wether the data is a sitemap or a web domain, if raised the url will be extracted from the sitemap")
-
-
 def choose(action, target_data, static_jsonld, csv, profile, convert, sitemap_convert):
     log.stdout(f'Action: {action}')
 
@@ -63,9 +61,13 @@ def choose(action, target_data, static_jsonld, csv, profile, convert, sitemap_co
         toJsonLD(target_data, action)
     elif action == "sitemap":
         sitemapExtract(target_data)
+    else:
+        log.error("No action chosen!")
 
     # --------------------------------------------------------------------------
     # Exit
+
+    return 0
 
 
 def sitemapExtract(target_data):
@@ -148,7 +150,7 @@ def validateData(target_data,
             target_data_path = pathlib.Path(target_data)
             target_data = toJsonLD(target_data_path, action="validate")
             if target_data == -1:
-                return -1
+                return Result(code=-1, result='No target data found')
 
         # ----------------------------------------------------------------------
         # Perform sitemap conversion, if requested
@@ -166,7 +168,7 @@ def validateData(target_data,
 
             if target_data == "":
                 log.info("No data to be validated.")
-                return -1
+                return Result(code=-1, result='No data to be validated')
             
         # ----------------------------------------------------------------------
         # Form target data list
@@ -185,11 +187,12 @@ def validateData(target_data,
                 log.info(target_data)
         else:
             log.info("The path is not a directory or a file.")
-            return -1
+            return Result(code=-1, result='The path is not a directory or a file.')
 
         # ----------------------------------------------------------------------
         # Process target data list
 
+        result = None
         dataName = ""
         for line in dataList:
             log.info(f"Validating: {line}")
@@ -224,8 +227,8 @@ def validateData(target_data,
                 result = validate(data, csv, profile)
             else:
                 log.error("Invalid data type, validation aborted")
-                return -1
-                
+                return Result(code=-1, result='Invalid data type, validation aborted')
+
             if csvNeeded:
                 # new = pd.DataFrame.from_dict(result)
                 csvWriter(result, dataName)
@@ -234,16 +237,18 @@ def validateData(target_data,
         if csvNeeded:
             csvBulkWriter(dataName)
 
-        return 0  # returnCode
+        return Result(code=0, result=result)
     except KeyboardInterrupt:
         click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
-        return -1
+        return Result(code=-1, result="Program stopped")
     except FileNotFoundError as errorMessage:
         click.secho("Missing file error, please double check", fg="red", file=config.OUTPUT_LOCATION_WRITE)
         click.secho(f"Error: {errorMessage}", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+        return Result(code=-1, result=errorMessage)
     except Exception as errorMessage:
         click.secho(f"Error: {errorMessage}", fg="red", file=config.OUTPUT_LOCATION_WRITE)
-        return -1
+        return Result(code=-1, result=errorMessage)
+
 
 def toJsonLD(target_data, action):
     """Convert the file from RDF serialization to JSON-LD

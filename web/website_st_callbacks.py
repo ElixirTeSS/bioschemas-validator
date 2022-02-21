@@ -23,14 +23,16 @@ def input_changed(which):
                  )
 
 
-def validate(target_data, static_jsonld=False, csv="N", profile="N", convert=False, sitemap_convert=False):
-    command.validateData(target_data,
-                         static_jsonld,
-                         csv,
-                         profile,
-                         convert,
-                         sitemap_convert
-                         )
+def validate(target_data, static_jsonld=False, csv="N", profile=None, convert=False, sitemap_convert=False):
+    result = command.validateData(target_data,
+                                  static_jsonld=static_jsonld,
+                                  csvNeeded=csv,
+                                  profile=profile,
+                                  convert=convert,
+                                  sitemap_convert=sitemap_convert
+                                  )
+    st.session_state.result = result.result
 
     with config.OUTPUT_LOCATION.open() as resultFile:
-        st.session_state.result = resultFile.read()
+        #st.session_state.result = resultFile.read()
+        print(resultFile.read())

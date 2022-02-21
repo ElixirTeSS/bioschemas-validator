@@ -88,4 +88,4 @@ with input_col:
 with output_col:
     st.header("Validation result")
     if st.session_state.result != '':
-        st.text(st.session_state.result)
+        st.write(st.session_state.result)
