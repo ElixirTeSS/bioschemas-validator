@@ -3,6 +3,7 @@ import streamlit as st
 
 # Local imports
 import web.website_st_callbacks as cb
+import web.formatting as fmt
 
 # Library imports
 
@@ -25,6 +26,9 @@ if 'metadata' not in st.session_state:
 
 if 'result' not in st.session_state:
     st.session_state.result = ''
+
+if 'result_file' not in st.session_state:
+    st.session_state.result_file = ''
 
 # -------------------------------------------------------------------------
 # Page layout
@@ -86,6 +90,41 @@ with input_col:
                  )
 
 with output_col:
-    st.header("Validation result")
+    st.header("Validation report")
+
+    # valid / not valid
+    
+    # what validated
+    # against what
+
+    # no errors
+    # no marginalities
+    # - minimum
+    # - recommended
+    # - optional
+
+    # file download
+    
+    if st.session_state.result != '':
+        report = st.session_state.result # local alias
+
+        markdown_text = f"""
+## {fmt.header("Result:")}             {fmt.validity(report['Valid'])}
+#### {fmt.header("Validating input:")} {report['File Name']}
+#### {fmt.header("Against profile:")}  {report['Profile Name']} [{report['Profile Version']}]
+
+{fmt.status(report['Minimum'])}
+{fmt.status(report['Recommended'])}
+{fmt.status(report['Optional'])}
+
+"""
+        st.markdown(markdown_text, unsafe_allow_html=True)
+        
+        # File Download
+        st.download_button('Download Report', st.session_state.result_file)
+    
+    
     if st.session_state.result != '':
         st.write(st.session_state.result)
+        st.text(st.session_state.result_file)
+

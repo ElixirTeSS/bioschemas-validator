@@ -1,4 +1,5 @@
 import streamlit as st
+
 import src.command as command
 import src.Classes.config as config
 
@@ -33,6 +34,5 @@ def validate(target_data, static_jsonld=False, csv="N", profile=None, convert=Fa
                                   )
     st.session_state.result = result.result
 
-    with config.OUTPUT_LOCATION.open() as resultFile:
-        #st.session_state.result = resultFile.read()
-        print(resultFile.read())
+    with config.OUTPUT_LOCATION.open() as result_file:
+        st.session_state.result_file = result_file.read()
