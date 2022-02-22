@@ -5,7 +5,8 @@ import re
 from dateutil.parser import parse
 import pathlib
 import src.Classes.config as config
-import click
+import src.log as log
+
 
 semanticPairDatePath = pathlib.Path("./src/Classes/semanticPairDate.txt")
 # validate a data using a schema
@@ -24,7 +25,6 @@ def validate(data, csv, profile):
     correctData = data
     profileName = ""
     if schema is None:
-        # if "@type" in data.keys():
         predicate = ""
         path = pathlib.Path(config.PROFILE_LOC)
         existProfile = os.listdir(path)
@@ -35,6 +35,7 @@ def validate(data, csv, profile):
                         for key, value in item.items():
                             if "http://bioschemas.org/" in value or "https://bioschemas.org/" in value:
                                 predicate = key + ":"
+
         # find the profile the data conforms to
         if "http://purl.org/dc/terms/conformsTo" in data.keys():
             profileName, version = profileVersionConform(data["http://purl.org/dc/terms/conformsTo"])
@@ -43,34 +44,26 @@ def validate(data, csv, profile):
                 profilePath = pathlib.Path(config.PROFILE_LOC) / profileName / (version + config.PROFILE_EXT)
 #                     if the path the data conform does not exist, erase the profilePath value
                 if profilePath.exists() is False:
-                    click.secho("The profile the data claims to conform to, " + str(profilePath) + ", is does not exist. Therefore the most recently release or draft version of the same type will be used to validate the data instead.", fg="yellow",
-                                file=config.OUTPUT_LOCATION_WRITE)
+                    log.warn(f"The profile the data claims to conform to, {profilePath}, is does not exist. Therefore the most recently release or draft version of the same type will be used to validate the data instead.")
                     profilePath = ""
-
 
         # if there is no conformTo, see the metadata type
         elif "@type" in data.keys():
-            # print(type(data["@type"] ))
             if type(data["@type"]) is str:
                 profileName = data["@type"]
 
             elif type(data["@type"]) is list:
-                # print("type")
-
                 for t in data["@type"]:
-                    # print(t)
                     if t in existProfile:
                         profileName = t
                 # if none of the type in the array is a Bioschemas profile
-                if profileName == "":                  
-                    click.secho("This metadata is of type: "+str(data["@type"])+", none is an existing Bioschemas profile type.",
-                                file=config.OUTPUT_LOCATION_WRITE)
+                if profileName == "":
+                    log.info(f"This metadata is of type: {data['@type']}, none is an existing Bioschemas profile type.")
                     return
 
         data = bioschemasPredicateRemoval(data, predicate)
 #           if the data did not have a profile link it conform to, only the type
         if profilePath == "":
-
             if profileName in existProfile:
                 pathWithProfileName = path / profileName
                 if pathWithProfileName.is_dir():
@@ -81,16 +74,13 @@ def validate(data, csv, profile):
                         version = releaseList[0]
                     else:
                         version = listv[0]
-
-                profilePath = pathlib.Path(config.PROFILE_LOC,  profileName ,version)
+                profilePath = pathlib.Path(config.PROFILE_LOC, profileName, version)
 
         if profilePath != "":
             schema,  profilePath= path_to_dict(profilePath)
-            click.secho("Validating against profile " + str(profileName) + " " + str(version),
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"Validating against profile {profileName} {version}")
         elif profilePath == "":
-            click.secho("The profile schemas, \"" + str(profileName) + "\", does not yet exist in the profile JSON schema directory, please add it first by running buildprofile with the source data for \"" + str(profileName) + "\".",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"""The profile schemas, "{profileName}", does not yet exist in the profile JSON schema directory, please add it first by running buildprofile with the source data for "{profileName}".""")
 
     if schema is not None:
         version = profilePath.name
@@ -99,53 +89,39 @@ def validate(data, csv, profile):
             schema["propertyNames"] = {"pattern": "^[a-z@\$][a-zA-Z]*$"}
         v = Draft7Validator(schema)
         errors = v.iter_errors(data)
-        click.secho("=======================Validator Message:=================================",
-                    file=config.OUTPUT_LOCATION_WRITE)
+        log.info(f"=======================Validator Message:=================================")
         for e in sorted(errors, key=lambda e: e.path):
             # if property does not exist
             if "is a required property" in e.message:
-                click.secho(e.message + " but it's missing.", fg="red",
-                            file=config.OUTPUT_LOCATION_WRITE)
+                log.error(f"{e.message} but it's missing.")
             # if property exist but has error(s)
             else:
                 if e.schema_path[0] == "properties":
                     del correctData[e.schema_path[1]]
                 if "is not valid under any of the given schemas" in e.message:
-                    click.secho("For property:" + str(e.schema_path[1])+" , " + str(e.message), fg="red",
-                                file=config.OUTPUT_LOCATION_WRITE)
+                    log.error(f"For property: {e.schema_path[1]}, {e.message}")
                 elif "does not match" in e.message:
-                    click.secho("Property name: "+str(e.message), fg="red",
-                                file=config.OUTPUT_LOCATION_WRITE)
-
+                    log.error(f"Property name: {e.message}")
                 else:
-                    click.secho(e.message,
-                                file=config.OUTPUT_LOCATION_WRITE)
+                    log.info(e.message)
                 if "validityCheck" in e.schema.keys() :
-                    click.secho(e.schema["validityCheck"],
-                                file=config.OUTPUT_LOCATION_WRITE)
-            click.secho("------",
-                        file=config.OUTPUT_LOCATION_WRITE)
+                    log.info(e.schema["validityCheck"])
+            log.info(f"------")
             errorPaths.append(e.schema_path[len(e.schema_path)-1])
 
         diffKeys = set(list(existProperty)) - set(list(data.keys()))
-        if len(errorPaths)==0:
-            click.secho("The data is valid against this profile",
-                        file=config.OUTPUT_LOCATION_WRITE)
-        elif len(errorPaths)>0:
+        if len(errorPaths) == 0:
+            log.info(f"The data is valid against this profile")
+        elif len(errorPaths) > 0:
             diffKeys = set(list(existProperty)) - set(list(data.keys()))
-            click.secho("Existing property value(s) that has error: " + str(list(diffKeys)),
-                        file=config.OUTPUT_LOCATION_WRITE)
-
+            log.info(f"Existing property value(s) that has error: {*diffKeys,}")
 
         date_semantic_check(correctData)
 
         profilePathParts = list(profilePath.parts)
-        # click.secho(str(profilePathParts),
-                    # file=config.OUTPUT_LOCATION_WRITE)
         listPath = pathlib.Path(config.PROFILE_MARG_LOC) / profilePathParts[-2] / profilePathParts[-1]
         listPath = listPath.with_suffix(config.PROFILE_MARG_EXT)
-        # click.secho(str(listPath),
-                    # file=config.OUTPUT_LOCATION_WRITE)
+
         if listPath.exists() is True:
             result = check_completeness(
                 existProperty, diffKeys, listPath, profileName, version, csv)
@@ -191,10 +167,8 @@ def profileVersionConform(value):
             infoList.remove("")
 
 #       the value is always a url link to the profile webpage on bioschemas which follows the same format
-#             click.secho(infoList)
         profileName = infoList[3]
         version = infoList[4]
-#         click.secho(profileName, version)
         return profileName, version
 
 #         if the format of the string is not a url
@@ -262,120 +236,81 @@ def check_completeness(existProperty, diffKeys, listPath, profileName, version, 
     extraProp = (set(existProperty).difference(
         set(profileListDictValue))).difference(set(metadataDefaultProp))
 
-    click.secho("============Properties Marginality Report:============",
-                file=config.OUTPUT_LOCATION_WRITE)
+    log.info(f"============Properties Marginality Report:============")
     # Minimum
-    click.secho("Marginality: Minimum",
-                file=config.OUTPUT_LOCATION_WRITE)
+    log.info(f"Marginality: Minimum")
     if noMinimum == 0:
-        click.secho("    There are no minimum property required by this profile.",
-                    file=config.OUTPUT_LOCATION_WRITE)
+        log.info(f"\tThere are no minimum property required by this profile.")
         create_completeness_dir(csv, result, "Minimum", "Missing", "")
         create_completeness_dir(csv, result, "Minimum", "Implemented", "")
         create_completeness_dir(csv, result, "Minimum", "Error", "")
     else:
         if len(list(diffMinimum)) != 0:
-            click.secho("    Required property that are missing: " + str(list(diffMinimum)), fg="red",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.error(f"\tRequired property that are missing: {*diffMinimum,}")
         else:
-            click.secho("    The data has all the required property(ies).", 
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"\tThe data has all the required property(ies).")
 
         if len(errorMinimum) != 0:
-            click.secho("    Required property that has error: " +
-                        str(list(errorMinimum)), fg="red",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.error(f"\tRequired property that has error: {*errorMinimum,}")
         else:
-            click.secho("    Implemented required property has no error.", fg="green",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.success(f"\tImplemented required property has no error.")
 
         create_completeness_dir(csv, result, "Minimum", "Missing", diffMinimum)
-        create_completeness_dir(csv, result, "Minimum",
-                                "Implemented", existMinimum)
+        create_completeness_dir(csv, result, "Minimum", "Implemented", existMinimum)
         create_completeness_dir(csv, result, "Minimum", "Error", errorMinimum)
 
-    result["Valid"] = "True" if len(diffMinimum) == 0 and len(
-        errorMinimum) == 0 else "False"
+    result["Valid"] = "True" if len(diffMinimum) == 0 and len(errorMinimum) == 0 else "False"
+    
     # Recommended
-    click.secho("Marginality: Recommended",
-                file=config.OUTPUT_LOCATION_WRITE)
+    log.info(f"Marginality: Recommended")
     if noRecommended == 0:
-        click.secho("    There are no recommended property recommended by this profile.",
-                    file=config.OUTPUT_LOCATION_WRITE)
+        log.info(f"\tThere are no recommended property recommended by this profile.")
 
         create_completeness_dir(csv, result, "Recommended", "Missing", "")
         create_completeness_dir(csv, result, "Recommended", "Implemented", "")
         create_completeness_dir(csv, result, "Recommended", "Error", "")
     else:
         if len(list(diffRecommended)) != 0:
-            click.secho("    Recommended property that are missing: " + str(list(diffRecommended)), fg="yellow",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.warn(f"\tRecommended property that are missing: {*diffRecommended,}")
         else:
-            click.secho("    The data has all the recommended property(ies).",
-                        file=config.OUTPUT_LOCATION_WRITE)
-
+            log.info(f"\tThe data has all the recommended property(ies).")
 
         if len(errorRecommended) != 0:
-            click.secho("    Recommended property that has error: " +
-                        str(list(errorRecommended)), fg="yellow",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.warn(f"\tRecommended property that has error: {*errorRecommended,}")
         else:
-            click.secho("    Implemented recommended property has no error.",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"\tImplemented recommended property has no error.")
 
-        create_completeness_dir(
-            csv, result, "Recommended", "Missing", diffRecommended)
-        create_completeness_dir(csv, result, "Recommended",
-                                "Implemented", existRecommended)
-        create_completeness_dir(
-            csv, result, "Recommended", "Error", errorRecommended)
+        create_completeness_dir(csv, result, "Recommended", "Missing", diffRecommended)
+        create_completeness_dir(csv, result, "Recommended", "Implemented", existRecommended)
+        create_completeness_dir(csv, result, "Recommended", "Error", errorRecommended)
 
     # Optional
-    click.secho("Marginality: Optional",
-                file=config.OUTPUT_LOCATION_WRITE)
+    log.info(f"Marginality: Optional")
     if noOptional == 0:
-        click.secho("    There are no optional property recommended by this profile.",
-                    file=config.OUTPUT_LOCATION_WRITE)
-        create_completeness_dir(
-            csv, result, "Optional", "Missing", "")
-        create_completeness_dir(csv, result, "Optional",
-                                "Implemented", "")
-        create_completeness_dir(
-            csv, result, "Optional", "Error", "")
+        log.info(f"\tThere are no optional property recommended by this profile.")
+        create_completeness_dir(csv, result, "Optional", "Missing", "")
+        create_completeness_dir(csv, result, "Optional", "Implemented", "")
+        create_completeness_dir(csv, result, "Optional", "Error", "")
     else:
         if len(list(diffOptional)) != 0:
-            click.secho("    Optional property that are missing: " + str(list(diffOptional)), fg="cyan",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.warn(f"\tOptional property that are missing: {*diffOptional,}")
         else:
-            click.secho("    The data has all the optional property(ies).",
-                               file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"\tThe data has all the optional property(ies).")
 
         if len(errorOptional) != 0:
-            click.secho("    Optional property that has error: " +
-                        str(list(errorOptional)), fg="cyan",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.warn(f"\tOptional property that has error: {*errorOptional,}")
         else:
-            click.secho("    Implemented optional property has no error.",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"\tImplemented optional property has no error.")
 
-
-        create_completeness_dir(
-            csv, result, "Optional", "Missing", diffOptional)
-        create_completeness_dir(csv, result, "Optional",
-                                "Implemented", existOptional)
-        create_completeness_dir(
-            csv, result, "Optional", "Error", errorOptional)
+        create_completeness_dir(csv, result, "Optional", "Missing", diffOptional)
+        create_completeness_dir(csv, result, "Optional", "Implemented", existOptional)
+        create_completeness_dir(csv, result, "Optional", "Error", errorOptional)
 
     # Extra properties not included in the Bioschemas profile
     if len(list(extraProp)) == 0:
-        click.secho(file=config.OUTPUT_LOCATION_WRITE)
-        click.secho("There is no property name in the metadata outside of the Bioschemas profile.",
-                    file=config.OUTPUT_LOCATION_WRITE)
+        log.info(f"\nThere is no property name in the metadata outside of the Bioschemas profile.")
     if len(list(extraProp)) != 0:
-        click.secho(file=config.OUTPUT_LOCATION_WRITE)
-        click.secho("These properties names are in the metadata but not in the Bioschemas profile:"+
-                    str(list(extraProp)), fg="cyan",
-                    file=config.OUTPUT_LOCATION_WRITE)
+        log.info(f"\nThese properties names are in the metadata but not in the Bioschemas profile: {*extraProp,}")
 
     return result
 
@@ -397,12 +332,9 @@ def is_date(string, fuzzy=False):
 
 # perform semantic check base on the relationship between property
 def date_semantic_check(data):
-    # print("test")
     with semanticPairDatePath.open() as f:
         semanticPairDate = f.readlines()
         f.close()
-
-    # semanticPairDate = filePath.read_text().split("\n")
 
     for line in semanticPairDate:
         pair = line.split()
@@ -410,33 +342,17 @@ def date_semantic_check(data):
         end = pair[1]
 
         if start in data.keys() and is_date(data.get(start)) is False:
-                click.secho("In property \"" + start + "\", \""
-                        + data.get(start)
-                            + "\" has incorrect data format, months should be between 1 and 12, date should be between 1 and 31",
-                            file=config.OUTPUT_LOCATION_WRITE)
-                click.secho("------",
-                            file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"""In property "{start}", "{data.get(start)}" has incorrect data format, months should be between 1 and 12, date should be between 1 and 31""")
         if end in data.keys() and is_date(data.get(end)) is False:
-                click.secho("In property \"" + end + "\", \""
-                        + data.get(end)
-                            + "\" has incorrect data format, months should be between 1 and 12, date should be between 1 and 31",
-                            file=config.OUTPUT_LOCATION_WRITE)
-                click.secho("------",
-                            file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"""In property "{end}", "{data.get(end)}" has incorrect data format, months should be between 1 and 12, date should be between 1 and 31""")
 #                as the date format check is done with the json schemas and incorrect property are removed
 #                there is no point to check formate again
         if start in data.keys() and end in data.keys() and is_date(data.get(start)) and is_date(data.get(end)):
                 staS = parse(data.get(start))
                 endS = parse(data.get(end))
-#                    staS = datetime.datetime.strptime(data.get(start), '%Y-%m-%d')
-#                    endS = datetime.datetime.strptime(data.get(end), '%Y-%m-%d')
                 if staS > endS:
-                    click.secho("\"" + start + "\" : " + "\"" + data.get(start) + "\" is after \"" + end
-                                + "\" : " + "\"" +
-                                data.get(start) + "\", please double check.",
-                                file=config.OUTPUT_LOCATION_WRITE)
-                    click.secho("------",
-                                file=config.OUTPUT_LOCATION_WRITE)
+                    log.info(f'''"{start}" : {data.get(start)} is after {end} : data.get(start), please double check.''')
+
     for key, value in data.items():
         if type(value) is dict:
             masterKeys = list()
@@ -446,7 +362,6 @@ def date_semantic_check(data):
 
 # perform semantic check base on the relationship between property, inside other properties
 def date_semantic_check_in_property(data, key, masterKeys):
-    # filePath = "./src/Classes/semanticPairDate.txt"
     with semanticPairDatePath.open() as f:
         semanticPairDate = f.readlines()
         f.close()
@@ -458,32 +373,14 @@ def date_semantic_check_in_property(data, key, masterKeys):
 
 #                as the date format check is done with the json schemas and incorrect property are removed
 #                there is no point to check formate again
-#                click.secho(data.get(start))
-#                click.secho(data.get(end))
         if start in data.keys() and is_date(data.get(start)) is False:
-            click.secho("Inside property "+ masterKeys + ",  \""
-                    + data.get(start) + "\"" + " for property \""
-                    + start
-                        + "\" has incorrect data format, months should be between 1 and 12, date should be between 1 and 31",
-                        file=config.OUTPUT_LOCATION_WRITE)
-            click.secho("------",
-                        file=config.OUTPUT_LOCATION_WRITE)
-        if end in data.keys() and is_date(data.get(end)) is False:
-            click.secho("Inside property " + masterKeys+", \""
-                    + data.get(end)
-                    + "\"" + " for property \"" + end
-                        + "\" has incorrect data format, months should be between 1 and 12, date should be between 1 and 31",
-                        file=config.OUTPUT_LOCATION_WRITE)
-            click.secho("------",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"Inside property {masterKeys}, '{data.get(start)}' for property {start} has incorrect data format, months should be between 1 and 12, date should be between 1 and 31")
         if start in data.keys() and end in data.keys() and is_date(data.get(start)) and is_date(data.get(end)):
+            log.info(f"Inside property {masterKeys}, '{data.get(end)}' for property {end} has incorrect data format, months should be between 1 and 12, date should be between 1 and 31")
             staS = parse(data.get(start))
             endS = parse(data.get(end))
             if staS > endS:
-                click.secho("Inside property"+ masterKeys+",""\"" + start + "\" : " + "\"" + data.get(start) + "\" is after \"" + end
-                            + "\" : " + "\"" +
-                            data.get(start) + "\", please double check.",
-                            file=config.OUTPUT_LOCATION_WRITE)
+                log.info(f"Inside property {masterKeys} '{start}' : {data.get(start)} is after '{end}' : {data.get(start)}, please double check.")
     for key, value in data.items():
         if type(value) is dict:
 #                 masterKey = ke
@@ -503,7 +400,6 @@ def path_to_dict(path):
 def str_to_dict(orgString):
     newDict = json.loads(orgString,
                             object_pairs_hook=dict_raise_on_duplicates)
-#         click.secho(newDict)
     return newDict
 
 
@@ -514,20 +410,12 @@ def dict_raise_on_duplicates(ordered_pairs):
     schemaOrg = False
     for k, v in ordered_pairs:
         if re.search(r"\s", k):
-#             click.secho(k)
-            click.secho("Please remove the whitespace(s) in property name " + k+
-                        "the Validator will proceed without the whitespace(s)\n",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"Please remove the whitespace(s) in property name {k} the Validator will proceed without the whitespace(s)\n")
             k = k.strip()
         if re.search("[^a-zA-Z@\$]", k) != None and "conformsTo" not in k:
-#             click.secho(k)
-            click.secho("Please be noted there are non alphabetic character in property name " + k +
-                        "schema.org has no property name with non alphabetic character therefore the Bioschemas validator will not validate this property.",
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"Please be noted there are non alphabetic character in property name {k} schema.org has no property name with non alphabetic character therefore the Bioschemas validator will not validate this property.")
         if k in d:
-            click.secho("duplicate property: " + k +
-                        "the value for the last %r will be used" + k,
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(f"Duplicate property: {k} the value for the last %r will be used {k}")
         elif type(v) is dict:
             masterKeys = list()
             masterKeys.append(k)
@@ -540,25 +428,14 @@ def dict_raise_on_duplicates(ordered_pairs):
 def dict_raise_on_duplicates_recursive(ordered_pairs, masterKeys):
     """Reject duplicate keys."""
     d = {}
-    # print(ordered_pairs)
-    for k, v in ordered_pairs.items():
 
-        if re.search(r"\s", k)!= None:
-#             click.secho("Please remove the whitespace in property name %r," % (k,),
-#                   "\n inside property" , masterKeys ,". The Validator will proceed without the whitespaces\n")
-#             k = k.strip()
-            click.secho(str(masterKeys),
-                        file=config.OUTPUT_LOCATION_WRITE)
-        if re.search("[^a-zA-Z@\$]", k) != None :
-#             click.secho(k,v)
-#             click.secho("Please be noted there are non alphabetic character in property name %r," % (k,),
-#                   "\n inside property" ,masterKeys ,". Schema.org has no property name with non alphabetic character therefore the Bioschemas validator will not validate this property.")
-            click.secho(str(masterKeys),
-                        file=config.OUTPUT_LOCATION_WRITE)
+    for k, v in ordered_pairs.items():
+        if re.search(r"\s", k) != None:
+            log.info(masterKeys)
+        if re.search("[^a-zA-Z@\$]", k) != None:
+            log.info(masterkeys)
         if k in d:
-#             click.secho("duplicate property: %r," % (k,), "inside property", masterKeys,", the value for the last %r will be used"% (k,))
-            click.secho(str(masterKeys),
-                        file=config.OUTPUT_LOCATION_WRITE)
+            log.info(masterkeys)
         elif type(v) is dict:
             masterKeys.append(k)
             d[k] = dict_raise_on_duplicates_recursive(v, masterKeys)
