@@ -47,13 +47,13 @@ def validate(data, csv, profile):
                                 file=config.OUTPUT_LOCATION_WRITE)
                     profilePath = ""
 
-        
+
         # if there is no conformTo, see the metadata type
         elif "@type" in data.keys():
             # print(type(data["@type"] ))
             if type(data["@type"]) is str:
-                profileName = data["@type"] 
-            
+                profileName = data["@type"]
+
             elif type(data["@type"]) is list:
                 # print("type")
 
@@ -62,15 +62,15 @@ def validate(data, csv, profile):
                     if t in existProfile:
                         profileName = t
                 # if none of the type in the array is a Bioschemas profile
-                if profileName == "":                        
+                if profileName == "":                  
                     click.secho("This metadata is of type: "+str(data["@type"])+", none is an existing Bioschemas profile type.",
                                 file=config.OUTPUT_LOCATION_WRITE)
                     return
-            
+
         data = bioschemasPredicateRemoval(data, predicate)
 #           if the data did not have a profile link it conform to, only the type
         if profilePath == "":
-            
+
             if profileName in existProfile:
                 pathWithProfileName = path / profileName
                 if pathWithProfileName.is_dir():
@@ -84,7 +84,6 @@ def validate(data, csv, profile):
 
                 profilePath = pathlib.Path(config.PROFILE_LOC,  profileName ,version)
 
-                
         if profilePath != "":
             schema,  profilePath= path_to_dict(profilePath)
             click.secho("Validating against profile " + str(profileName) + " " + str(version),
@@ -153,8 +152,8 @@ def validate(data, csv, profile):
             return result
         return 0
 
-def bioschemasPredicateRemoval(data, predicate):
 
+def bioschemasPredicateRemoval(data, predicate):
     if type(data) is dict and "@type" in data.keys():
         for key, value in data.items():
             if type(value) is str and predicate in value:
@@ -165,6 +164,7 @@ def bioschemasPredicateRemoval(data, predicate):
                 for instance in value:
                     bioschemasPredicateRemoval(instance, predicate)
     return data
+
 
 def profileVersionConform(value):
     valueType = type(value)
@@ -211,8 +211,8 @@ def create_marg_dict(profileName, version):
     result["Optional"] = dict()
     return result
 
-def create_completeness_dir(format, result, key1, key2, properties):
 
+def create_completeness_dir(format, result, key1, key2, properties):
     number = str(len(properties)) if properties != "" else str(0)
     names = sorted(list(properties)) if properties != "" else None
     value = "None"
@@ -221,18 +221,16 @@ def create_completeness_dir(format, result, key1, key2, properties):
     elif format == "name":
         value = names
     elif format == "all":
-        names.append("Total: "+number)
+        names.append(f"Total: {number}")
         value = names
-        
+
     result[key1][key2] = value
 
     return result
 
+
 def check_completeness(existProperty, diffKeys, listPath, profileName, version, csv):
-
-
     result = create_marg_dict(profileName, version)
-
 
     profileListDict = json.loads(listPath.read_text())
     # property name such as @type that are not in the Bioschemas profile but should be in the json ld therefore will not be count as extra properties
@@ -290,7 +288,6 @@ def check_completeness(existProperty, diffKeys, listPath, profileName, version, 
         else:
             click.secho("    Implemented required property has no error.", fg="green",
                         file=config.OUTPUT_LOCATION_WRITE)
-
 
         create_completeness_dir(csv, result, "Minimum", "Missing", diffMinimum)
         create_completeness_dir(csv, result, "Minimum",
@@ -369,7 +366,6 @@ def check_completeness(existProperty, diffKeys, listPath, profileName, version, 
         create_completeness_dir(
             csv, result, "Optional", "Error", errorOptional)
 
-
     # Extra properties not included in the Bioschemas profile
     if len(list(extraProp)) == 0:
         click.secho(file=config.OUTPUT_LOCATION_WRITE)
@@ -382,6 +378,7 @@ def check_completeness(existProperty, diffKeys, listPath, profileName, version, 
                     file=config.OUTPUT_LOCATION_WRITE)
 
     return result
+
 
 def is_date(string, fuzzy=False):
     """
@@ -397,9 +394,9 @@ def is_date(string, fuzzy=False):
     except ValueError:
         return False
 
+
 # perform semantic check base on the relationship between property
 def date_semantic_check(data):
-   
     # print("test")
     with semanticPairDatePath.open() as f:
         semanticPairDate = f.readlines()
@@ -445,6 +442,7 @@ def date_semantic_check(data):
             masterKeys = list()
             masterKeys.append(key)
             date_semantic_check_in_property(value, key, masterKeys)
+
 
 # perform semantic check base on the relationship between property, inside other properties
 def date_semantic_check_in_property(data, key, masterKeys):
@@ -492,6 +490,7 @@ def date_semantic_check_in_property(data, key, masterKeys):
             masterKeys.append(key)
             date_semantic_check_in_property(value, key, masterKeys)
 
+            
 # loads the string from the file to a json object
 def path_to_dict(path):
     path = pathlib.Path(path)
@@ -499,6 +498,7 @@ def path_to_dict(path):
     newDict = json.loads(orgString,
                             object_pairs_hook=dict_raise_on_duplicates)
     return newDict, path
+
 
 def str_to_dict(orgString):
     newDict = json.loads(orgString,
@@ -566,8 +566,10 @@ def dict_raise_on_duplicates_recursive(ordered_pairs, masterKeys):
             d[k] = v
     return d
 
+
 def hasNumbers(inputString):
-     return bool(re.search(r'\d', inputString))
+    return bool(re.search(r'\d', inputString))
+
 
 def sortby(x):
     try:
