@@ -9,8 +9,9 @@ import src.log as log
 
 
 semanticPairDatePath = pathlib.Path("./src/Classes/semanticPairDate.txt")
+
 # validate a data using a schema
-def validate(data, csv, profile):
+def validate(data, profile):
     global errorPaths
     global existProperty
     global diffKeys
@@ -124,7 +125,7 @@ def validate(data, csv, profile):
 
         if listPath.exists() is True:
             result = check_completeness(
-                existProperty, diffKeys, listPath, profileName, version, csv)
+                existProperty, diffKeys, listPath, profileName, version)
             return result
         return 0
 
@@ -186,24 +187,12 @@ def create_marg_dict(profileName, version):
     return result
 
 
-def create_completeness_dir(format, result, key1, key2, properties):
-    number = str(len(properties)) if properties != "" else str(0)
-    names = sorted(list(properties)) if properties != "" else None
-    value = "None"
-    if format == "num":
-        value = number
-    elif format == "name":
-        value = names
-    elif format == "all":
-        names.append(f"Total: {number}")
-        value = names
-
-    result[key1][key2] = value
-
+def update_completeness_dict(result, key1, key2, properties):
+    result[key1][key2] = sorted(list(properties))
     return result
 
 
-def check_completeness(existProperty, diffKeys, listPath, profileName, version, csv):
+def check_completeness(existProperty, diffKeys, listPath, profileName, version):
     result = create_marg_dict(profileName, version)
 
     profileListDict = json.loads(listPath.read_text())
@@ -211,100 +200,24 @@ def check_completeness(existProperty, diffKeys, listPath, profileName, version, 
     with pathlib.Path(config.METADATA_DEFAULT_PROP).open() as f:
         metadataDefaultProp = f.read().splitlines()
 
-    noMinimum  = len(profileListDict["minimum"])
-    noRecommended = len(profileListDict["recommended"])
-    noOptional = len(profileListDict["optional"])
-
-    existMinimum = set(profileListDict["minimum"]).intersection(existProperty)
-    existRecommended = set(profileListDict["recommended"]).intersection(existProperty)
-    existOptional = set(
-        profileListDict["optional"]).intersection(existProperty)
-
-    errorMinimum = set(profileListDict["minimum"]).intersection(diffKeys)
-    errorRecommended = set(profileListDict["recommended"]).intersection(diffKeys)
-    errorOptional = set(profileListDict["optional"]).intersection(diffKeys)
-
-    diffMinimum = set(profileListDict["minimum"]) - set(existProperty)
-    diffRecommended = set(profileListDict["recommended"]) - set(existProperty)
-    diffOptional = set(profileListDict["optional"]) - set(existProperty)
-
     profileListDictValues = list(profileListDict.values())
     profileListDictValue = list()
     for v in profileListDictValues:
         profileListDictValue += v
 
-    extraProp = (set(existProperty).difference(
-        set(profileListDictValue))).difference(set(metadataDefaultProp))
+    extraProp = (set(existProperty).difference(set(profileListDictValue))).difference(set(metadataDefaultProp))
 
     log.info(f"============Properties Marginality Report:============")
-    # Minimum
-    log.info(f"Marginality: Minimum")
-    if noMinimum == 0:
-        log.info(f"\tThere are no minimum property required by this profile.")
-        create_completeness_dir(csv, result, "Minimum", "Missing", "")
-        create_completeness_dir(csv, result, "Minimum", "Implemented", "")
-        create_completeness_dir(csv, result, "Minimum", "Error", "")
-    else:
-        if len(list(diffMinimum)) != 0:
-            log.error(f"\tRequired property that are missing: {*diffMinimum,}")
-        else:
-            log.info(f"\tThe data has all the required property(ies).")
 
-        if len(errorMinimum) != 0:
-            log.error(f"\tRequired property that has error: {*errorMinimum,}")
-        else:
-            log.success(f"\tImplemented required property has no error.")
-
-        create_completeness_dir(csv, result, "Minimum", "Missing", diffMinimum)
-        create_completeness_dir(csv, result, "Minimum", "Implemented", existMinimum)
-        create_completeness_dir(csv, result, "Minimum", "Error", errorMinimum)
-
-    result["Valid"] = "True" if len(diffMinimum) == 0 and len(errorMinimum) == 0 else "False"
-    
-    # Recommended
-    log.info(f"Marginality: Recommended")
-    if noRecommended == 0:
-        log.info(f"\tThere are no recommended property recommended by this profile.")
-
-        create_completeness_dir(csv, result, "Recommended", "Missing", "")
-        create_completeness_dir(csv, result, "Recommended", "Implemented", "")
-        create_completeness_dir(csv, result, "Recommended", "Error", "")
-    else:
-        if len(list(diffRecommended)) != 0:
-            log.warn(f"\tRecommended property that are missing: {*diffRecommended,}")
-        else:
-            log.info(f"\tThe data has all the recommended property(ies).")
-
-        if len(errorRecommended) != 0:
-            log.warn(f"\tRecommended property that has error: {*errorRecommended,}")
-        else:
-            log.info(f"\tImplemented recommended property has no error.")
-
-        create_completeness_dir(csv, result, "Recommended", "Missing", diffRecommended)
-        create_completeness_dir(csv, result, "Recommended", "Implemented", existRecommended)
-        create_completeness_dir(csv, result, "Recommended", "Error", errorRecommended)
-
-    # Optional
-    log.info(f"Marginality: Optional")
-    if noOptional == 0:
-        log.info(f"\tThere are no optional property recommended by this profile.")
-        create_completeness_dir(csv, result, "Optional", "Missing", "")
-        create_completeness_dir(csv, result, "Optional", "Implemented", "")
-        create_completeness_dir(csv, result, "Optional", "Error", "")
-    else:
-        if len(list(diffOptional)) != 0:
-            log.warn(f"\tOptional property that are missing: {*diffOptional,}")
-        else:
-            log.info(f"\tThe data has all the optional property(ies).")
-
-        if len(errorOptional) != 0:
-            log.warn(f"\tOptional property that has error: {*errorOptional,}")
-        else:
-            log.info(f"\tImplemented optional property has no error.")
-
-        create_completeness_dir(csv, result, "Optional", "Missing", diffOptional)
-        create_completeness_dir(csv, result, "Optional", "Implemented", existOptional)
-        create_completeness_dir(csv, result, "Optional", "Error", errorOptional)
+    for level in ['Minimum', 'Recommended', 'Optional']:
+        valid = marginality_level_report(level_name = level,
+                                         profile_list = profileListDict,
+                                         existProperty = existProperty,
+                                         diffKeys = diffKeys,
+                                         result = result
+                                         )
+        if level == 'minimum':
+            result['Valid'] = valid
 
     # Extra properties not included in the Bioschemas profile
     if len(list(extraProp)) == 0:
@@ -457,3 +370,40 @@ def sortby(x):
         return float(x)
     except ValueError:
         return float('inf')
+
+
+def marginality_level_report(level_name    = '',
+                             profile_list  = None,
+                             existProperty = None,
+                             diffKeys      = None,
+                             result        = None
+                             ):
+    log.info(f"Marginality: {level_name}")
+    key_name = level_name.lower()
+
+    number     = len(profile_list[key_name])
+    exist      = set(profile_list[key_name]).intersection(existProperty)
+    error      = set(profile_list[key_name]).intersection(diffKeys)
+    difference = set(profile_list[key_name]) - set(existProperty)
+
+    if number == 0:
+        log.info(f"\tThere are no minimum property required by this profile.")
+        update_completeness_dict(result, level_name, "Missing", "")
+        update_completeness_dict(result, level_name, "Implemented", "")
+        update_completeness_dict(result, level_name, "Error", "")
+    else:
+        if len(list(difference)) != 0:
+            log.error(f"\tRequired property that are missing: {*difference,}")
+        else:
+            log.info(f"\tThe data has all the required property(ies).")
+
+        if len(error) != 0:
+            log.error(f"\tRequired property that has error: {*error,}")
+        else:
+            log.success(f"\tImplemented required property has no error.")
+
+        update_completeness_dict(result, level_name, "Missing", difference)
+        update_completeness_dict(result, level_name, "Implemented", exist)
+        update_completeness_dict(result, level_name, "Error", error)
+
+    result["Valid"] = "True" if len(difference) == 0 and len(error) == 0 else "False"

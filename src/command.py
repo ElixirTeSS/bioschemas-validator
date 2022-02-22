@@ -224,7 +224,7 @@ def validateData(target_data,
                 ((containProfile and not os.path.isdir(target_data)) or (not containProfile))
                 ):
                 data, dataPath = path_to_dict(pathlib.Path(dataName))
-                result = validate(data, csv, profile)
+                result = validate(data, profile)
             else:
                 log.error("Invalid data type, validation aborted")
                 return Result(code=-1, result='Invalid data type, validation aborted')

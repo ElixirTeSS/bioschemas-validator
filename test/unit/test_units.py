@@ -23,7 +23,7 @@ class TestUnits(unittest.TestCase):
         self.assertIsNotNone(
             mapping,  "The mapping was not extracted")
         
-    def testCheckCompletenessNum(self):
+    def testCheckCompleteness(self):
         profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
         profileListDict = json.loads(profileListDictPath.read_text())
 
@@ -32,42 +32,12 @@ class TestUnits(unittest.TestCase):
         with profileExistPath.open() as f:
             existProperty = f.read().splitlines()
         diffKeys = []
-        result = check_completeness(existProperty, diffKeys, profileListDictPath,
-                        "ComputationalWorkflow", "1.0-RELEASE", "num")
-        propMinExist = str(len(set(existProperty).intersection(
-            set(profileListDict["minimum"]))))
-        self.assertEqual(propMinExist,
-                            result["Minimum"]["Implemented"])
-
-    def testCheckCompletenessName(self):
-        profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
-        profileListDict = json.loads(profileListDictPath.read_text())
-
-        profileExistPath = pathlib.Path(
-            "test/fixtures/profile_lib/profile_exist_prop.txt")
-        with profileExistPath.open() as f:
-            existProperty = f.read().splitlines()
-        diffKeys = []
-        result = check_completeness(existProperty, diffKeys, profileListDictPath,
-                        "ComputationalWorkflow", "1.0-RELEASE", "name")
-        propMinExist = sorted(list(set(existProperty).intersection(
-            set(profileListDict["minimum"]))))
-        self.assertListEqual(propMinExist,
-                            result["Minimum"]["Implemented"])
-
-    def testCheckCompletenessAll(self):
-        profileListDictPath = pathlib.Path("test/fixtures/profile_lib/profile_marg.txt")
-        profileListDict = json.loads(profileListDictPath.read_text())
-
-        profileExistPath = pathlib.Path(
-            "test/fixtures/profile_lib/profile_exist_prop.txt")
-        with profileExistPath.open() as f:
-            existProperty = f.read().splitlines()
-        diffKeys = []
-        result = check_completeness(existProperty, diffKeys, profileListDictPath,
-                        "ComputationalWorkflow", "1.0-RELEASE", "all")
-        propMinExist = sorted(list(set(existProperty).intersection(
-            set(profileListDict["minimum"]))))
-        propMinExist.append("Total: "+str(len(propMinExist)))
-        self.assertListEqual(propMinExist,
-                            result["Minimum"]["Implemented"])
+        result = check_completeness(existProperty,
+                                    diffKeys,
+                                    profileListDictPath,
+                                    "ComputationalWorkflow",
+                                    "1.0-RELEASE")
+        propMinExist = str(set(profileListDict["minimum"]))
+        print(f"OWDB IN  {propMinExist}")
+        print(f"OWDB OUT {result['Minimum']['Implemented']}")
+        self.assertEqual(propMinExist, result["Minimum"]["Implemented"])

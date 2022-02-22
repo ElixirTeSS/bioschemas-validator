@@ -13,18 +13,17 @@ def input_changed(which):
     elif which == "raw":
         metadata = st.session_state.raw
     else:
-        print("OWDB: Error no metadata specified") 
+        print("OWDB: Error no metadata specified")
 
     st.session_state.metadata = metadata
     with st.spinner(text='Performing Validation...'):
-
         validate(st.session_state.url,
-                 static_jsonld=(which == "url"),
+                 static_jsonld  =(which == "url"),
                  sitemap_convert=(which == "sitemap")
                  )
 
 
-def validate(target_data, static_jsonld=False, csv="N", profile=None, convert=False, sitemap_convert=False):
+def validate(target_data, static_jsonld=False, csv=True, profile=None, convert=False, sitemap_convert=False):
     result = command.validateData(target_data,
                                   static_jsonld=static_jsonld,
                                   csvNeeded=csv,

@@ -113,8 +113,12 @@ with output_col:
 #### {fmt.header("Validating input:")} {report['File Name']}
 #### {fmt.header("Against profile:")}  {report['Profile Name']} [{report['Profile Version']}]
 
+#### {fmt.header("Marginality report")}
+###### Minimum
 {fmt.status(report['Minimum'])}
+###### Recommended
 {fmt.status(report['Recommended'])}
+###### Optional
 {fmt.status(report['Optional'])}
 
 """

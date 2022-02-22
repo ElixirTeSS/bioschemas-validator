@@ -20,5 +20,6 @@ def validity(valid):
         return f'<span style="color:{red}">Metadata is NOT valid</span>'
 
 
-def status(line):
-    print(repr(line))
+def status(level_report_str):
+    level_report = level_report_str.replace('\n','\n\n')
+    return level_report
