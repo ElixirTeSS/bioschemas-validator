@@ -310,17 +310,19 @@ def csvWriter(resultdict, name):
         resultdict (dict): A dict of the validation result with keys as "Minium", "Recommendation" and "Optional"
         name (string): The name of the file that the validation report is for
     """
-    if resultdict == 0 or None:
+    output_dict = resultdict
+
+    if output_dict == 0 or None:
         log.info("This profile has no list of properties and marginality. No csv is made")
         return 0
-    elif resultdict is not None:
-        resultdict["File Name"] = name
-        for keyName in resultdict.keys():
+    elif output_dict is not None:
+        output_dict["File Name"] = name
+        for keyName in output_dict.keys():
             if keyName == "Minimum" or keyName == "Recommended" or keyName == "Optional":
                 newString = ""
-                for k, v in resultdict[keyName].items():
+                for k, v in output_dict[keyName].items():
                     newString = newString + "\n" + k + ": " + str(v)
-                resultdict[keyName] = newString.strip()
+                output_dict[keyName] = newString.strip()
 
         if type(name) is str:
             name = pathlib.Path(name)
@@ -331,7 +333,7 @@ def csvWriter(resultdict, name):
                 "Valid", "Minimum", "Recommended", "Optional"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerows([resultdict])
+            writer.writerows([output_dict])
             log.info(f"CSV file location: {name}.csv")
 
         return 1
