@@ -229,16 +229,13 @@ def validateData(target_data,
                 log.error("Invalid data type, validation aborted")
                 return Result(code=-1, result='Invalid data type, validation aborted')
 
-            print(result)
             if csvNeeded:
                 # new = pd.DataFrame.from_dict(result)
                 csvWriter(result, dataName)
-            print(result)
             log.info("###########End Validation#############\n")
         if csvNeeded:
             csvBulkWriter(dataName)
 
-        print(result)
         return Result(code=0, result=result)
     except KeyboardInterrupt:
         click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
