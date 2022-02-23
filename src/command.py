@@ -229,14 +229,16 @@ def validateData(target_data,
                 log.error("Invalid data type, validation aborted")
                 return Result(code=-1, result='Invalid data type, validation aborted')
 
+            print(result)
             if csvNeeded:
                 # new = pd.DataFrame.from_dict(result)
                 csvWriter(result, dataName)
-
+            print(result)
             log.info("###########End Validation#############\n")
         if csvNeeded:
             csvBulkWriter(dataName)
 
+        print(result)
         return Result(code=0, result=result)
     except KeyboardInterrupt:
         click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
@@ -310,7 +312,8 @@ def csvWriter(resultdict, name):
         resultdict (dict): A dict of the validation result with keys as "Minium", "Recommendation" and "Optional"
         name (string): The name of the file that the validation report is for
     """
-    output_dict = resultdict
+    from copy import copy
+    output_dict = copy(resultdict)
 
     if output_dict == 0 or None:
         log.info("This profile has no list of properties and marginality. No csv is made")
