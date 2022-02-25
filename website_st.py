@@ -3,7 +3,7 @@ import streamlit as st
 
 # Local imports
 import web.website_st_callbacks as cb
-import web.formatting as fmt
+import web.report as report
 
 # Library imports
 
@@ -92,43 +92,24 @@ with input_col:
 with output_col:
     st.header("Validation report")
 
-    # valid / not valid
-    
-    # what validated
-    # against what
-
-    # no errors
-    # no marginalities
-    # - minimum
-    # - recommended
-    # - optional
-
-    # file download
-    
     if st.session_state.result != '':
-        report = st.session_state.result # local alias
+        result = st.session_state.result  # local alias
 
-        markdown_text = f"""
-## {fmt.header("Result:")}             {fmt.validity(report['Valid'])}
-#### {fmt.header("Validating input:")} {report['File Name']}
-#### {fmt.header("Against profile:")}  {report['Profile Name']} [{report['Profile Version']}]
-
-#### {fmt.header("Marginality report")}
-###### Minimum
-{fmt.status(report['Minimum'])}
-###### Recommended
-{fmt.status(report['Recommended'])}
-###### Optional
-{fmt.status(report['Optional'])}
-
-"""
-        st.markdown(markdown_text, unsafe_allow_html=True)
-        
         # File Download
         st.download_button('Download Report', st.session_state.result_file)
-    
-    
-    if st.session_state.result != '':
-        st.write(st.session_state.result)
-        st.text(st.session_state.result_file)
 
+        # Report summary
+        markdown_text = report.generate_report_summary(result)
+        st.markdown(markdown_text, unsafe_allow_html=True)
+        
+        report_dataframe = report.get_dataframe(result)
+        st.dataframe(report_dataframe)
+
+        # Report body
+        markdown_text = report.generate_report_body(result)
+        st.markdown(markdown_text, unsafe_allow_html=True)
+
+    # Debug
+    # if st.session_state.result != '':
+    #     st.write(st.session_state.result)
+    #     st.text(st.session_state.result_file)
