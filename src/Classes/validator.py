@@ -1,5 +1,5 @@
 import json
-from jsonschema import Draft7Validator
+import jsonschema as js
 import os
 import re
 from dateutil.parser import parse
@@ -16,97 +16,74 @@ def validate(data, profile):
     global existProperty
     global diffKeys
 
-    profilePath = ""
+    # --------------------------------------------------------------------------
+    # Set globals
+    
+    errorPaths = list()
+    existProperty = list(data.keys())
+
+    # --------------------------------------------------------------------------
+    # Try to get schema from specified(?) profile 
+
     schema, schemaPath = None, None
     if profile is not None:
         schema, schemaPath = path_to_dict(pathlib.Path(profile))
 
-    existProperty = list(data.keys())
-    errorPaths = list()
-    correctData = data
-    profileName = ""
+    # --------------------------------------------------------------------------
+    # Try to get schema from stored profile
+
     if schema is None:
-        predicate = ""
         path = pathlib.Path(config.PROFILE_LOC)
         existProfile = os.listdir(path)
-        if "@context" in data.keys():
-            if type(data["@context"]) is list:
-                for item in data["@context"]:
-                    if type(item) is dict:
-                        for key, value in item.items():
-                            if "http://bioschemas.org/" in value or "https://bioschemas.org/" in value:
-                                predicate = key + ":"
-
-        # find the profile the data conforms to
-        if "http://purl.org/dc/terms/conformsTo" in data.keys():
-            profileName, version = profileVersionConform(data["http://purl.org/dc/terms/conformsTo"])
-            # if the property value has a profile version
-            if version != -1:
-                profilePath = pathlib.Path(config.PROFILE_LOC) / profileName / (version + config.PROFILE_EXT)
-#                     if the path the data conform does not exist, erase the profilePath value
-                if profilePath.exists() is False:
-                    log.warn(f"The profile the data claims to conform to, {profilePath}, is does not exist. Therefore the most recently release or draft version of the same type will be used to validate the data instead.")
-                    profilePath = ""
-
-        # if there is no conformTo, see the metadata type
-        elif "@type" in data.keys():
-            if type(data["@type"]) is str:
-                profileName = data["@type"]
-
-            elif type(data["@type"]) is list:
-                for t in data["@type"]:
-                    if t in existProfile:
-                        profileName = t
-                # if none of the type in the array is a Bioschemas profile
-                if profileName == "":
-                    log.info(f"This metadata is of type: {data['@type']}, none is an existing Bioschemas profile type.")
-                    return
-
+        predicate = get_predicate(data)
+        profileName, profilePath, version = get_profile(data, path, existProfile)
         data = bioschemasPredicateRemoval(data, predicate)
-#           if the data did not have a profile link it conform to, only the type
-        if profilePath == "":
-            if profileName in existProfile:
-                pathWithProfileName = path / profileName
-                if pathWithProfileName.is_dir():
-                    listv = os.listdir(pathWithProfileName)
-                    listv.sort(key=sortby, reverse=True)
-                    releaseList = [item for item in listv if "RELEASE" in item]
-                    if releaseList != []:
-                        version = releaseList[0]
-                    else:
-                        version = listv[0]
-                profilePath = pathlib.Path(config.PROFILE_LOC, profileName, version)
 
         if profilePath != "":
-            schema,  profilePath= path_to_dict(profilePath)
+            schema, profilePath = path_to_dict(profilePath)
             log.info(f"Validating against profile {profileName} {version}")
         elif profilePath == "":
             log.info(f"""The profile schemas, "{profileName}", does not yet exist in the profile JSON schema directory, please add it first by running buildprofile with the source data for "{profileName}".""")
+            return -1
+
+    # --------------------------------------------------------------------------
+    # If schema has been found, attempt validation
 
     if schema is not None:
-        version = profilePath.name
-#             if the data uses only schemas.org properties, all property names should be lowerCamelCase
+        # if the data uses only schemas.org properties, all property names should be lowerCamelCase
         if "@context" in data.keys() and type(data["@context"]) != list and "http://schema.org" in data["@context"]:
             schema["propertyNames"] = {"pattern": "^[a-z@\$][a-zA-Z]*$"}
-        v = Draft7Validator(schema)
-        errors = v.iter_errors(data)
+
+        # ----------------------------------------------------------------------
+        # Perform validation
+
+        v = js.Draft7Validator(schema)
+        errors = sorted(v.iter_errors(data), key=lambda e: e.path)
+
+        # ----------------------------------------------------------------------
+        # Process validation output
+
         log.info(f"=======================Validator Message:=================================")
-        for e in sorted(errors, key=lambda e: e.path):
+        error_messages = []
+        for e in errors:
+            msg = ""
             # if property does not exist
             if "is a required property" in e.message:
-                log.error(f"{e.message} but it's missing.")
+                msg = f"{e.message} but it's missing."
             # if property exist but has error(s)
             else:
                 if e.schema_path[0] == "properties":
-                    del correctData[e.schema_path[1]]
+                    del data[e.schema_path[1]]
                 if "is not valid under any of the given schemas" in e.message:
-                    log.error(f"For property: {e.schema_path[1]}, {e.message}")
+                    msg = f"For property: {e.schema_path[1]}, {e.message}"
                 elif "does not match" in e.message:
-                    log.error(f"Property name: {e.message}")
+                    msg = f"Property name: {e.message}"
                 else:
-                    log.info(e.message)
+                    msg = e.message
                 if "validityCheck" in e.schema.keys() :
                     log.info(e.schema["validityCheck"])
+            log.error(msg)
+            error_messages.append(msg)
             log.info(f"------")
             errorPaths.append(e.schema_path[len(e.schema_path)-1])
 
@@ -117,15 +94,17 @@ def validate(data, profile):
             diffKeys = set(list(existProperty)) - set(list(data.keys()))
             log.info(f"Existing property value(s) that has error: {*diffKeys,}")
 
-        date_semantic_check(correctData)
+        date_semantic_check(data)
 
         profilePathParts = list(profilePath.parts)
         listPath = pathlib.Path(config.PROFILE_MARG_LOC) / profilePathParts[-2] / profilePathParts[-1]
         listPath = listPath.with_suffix(config.PROFILE_MARG_EXT)
 
         if listPath.exists() is True:
+            version = profilePath.name
             result = check_completeness(
                 existProperty, diffKeys, listPath, profileName, version)
+            result['Error Messages'] = error_messages
             return result
         return 0
 
@@ -407,3 +386,65 @@ def marginality_level_report(level_name    = '',
         update_completeness_dict(result, level_name, "Error", error)
 
     result["Valid"] = "True" if len(difference) == 0 and len(error) == 0 else "False"
+
+
+def get_predicate(data):
+    predicate = ""
+    if "@context" in data.keys():
+        if type(data["@context"]) is list:
+            for item in data["@context"]:
+                if type(item) is dict:
+                    for key, value in item.items():
+                        if "http://bioschemas.org/" in value or "https://bioschemas.org/" in value:
+                            predicate = key + ":"
+    return predicate
+
+def get_profile(data, path, existProfile):
+    profileName = ""
+    profilePath = ""
+    version = ""
+
+    # find the profile the data conforms to
+    if "http://purl.org/dc/terms/conformsTo" in data.keys():
+        profileName, version = profileVersionConform(data["http://purl.org/dc/terms/conformsTo"])
+        # if the property value has a profile version
+        if version != -1:
+            profilePath = pathlib.Path(config.PROFILE_LOC) / profileName / (version + config.PROFILE_EXT)
+            #if the path the data conform does not exist, erase the profilePath value
+            if profilePath.exists() is False:
+                log.warn(f"The profile the data claims to conform to, {profilePath}, is does not exist. Therefore the most recently release or draft version of the same type will be used to validate the data instead.")
+                profilePath = ""
+    # if there is no conformTo, see the metadata type
+    elif "@type" in data.keys():
+        if type(data["@type"]) is str:
+            profileName = data["@type"]
+        elif type(data["@type"]) is list:
+            for t in data["@type"]:
+                if t in existProfile:
+                    profileName = t
+            # if none of the type in the array is a Bioschemas profile
+            if profileName == "":
+                log.info(f"This metadata is of type: {data['@type']}, none is an existing Bioschemas profile type.")
+                return
+
+    if profilePath == "":
+        profilePath = get_fallback_profile_path(profileName, path, existProfile)
+
+    return (profileName, profilePath, version)
+
+
+def get_fallback_profile_path(profileName, path, existProfile):
+    # if the data did not have a profile link it conform to, only the type
+    if profileName in existProfile:
+        pathWithProfileName = path / profileName
+        if pathWithProfileName.is_dir():
+            listv = os.listdir(pathWithProfileName)
+            listv.sort(key=sortby, reverse=True)
+            releaseList = [item for item in listv if "RELEASE" in item]
+            if releaseList != []:
+                version = releaseList[0]
+            else:
+                version = listv[0]
+        profilePath = pathlib.Path(config.PROFILE_LOC, profileName, version)
+
+    return profilePath

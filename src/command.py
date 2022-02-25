@@ -330,7 +330,8 @@ def csvWriter(resultdict, name):
 
         with open(name + ".csv", "w") as csvfile:
             fieldnames = ["File Name", "Profile Name", "Profile Version",
-                "Valid", "Minimum", "Recommended", "Optional"]
+                          "Valid", "Minimum", "Recommended", "Optional",
+                          "Error Messages"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows([output_dict])
