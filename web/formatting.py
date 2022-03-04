@@ -1,7 +1,5 @@
 import toml
 
-red = '#FF0000'
-
 
 def get_theme_colour(name):
     # Available in streamlit config:
@@ -32,8 +30,10 @@ def validity(valid):
         return colour("Metadata is NOT valid", "red")
 
 
-def status(level_report_str):
-    level_report = level_report_str  #level_report_str.replace('\n','\n\n')
-    return level_report
+def folding_context(headline, context):
+    upper = f'<details><summary><b>{headline}</b></summary><p>'
+    details = '\n\n'.join([f'{colour(ii, "yellow")}: {entry.message}' for ii,entry in enumerate(context)])
+    lower = '</p></details>'
 
-
+    fold = f'{upper}{details}{lower}'
+    return fold
