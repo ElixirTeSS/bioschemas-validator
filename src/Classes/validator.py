@@ -83,7 +83,7 @@ def validate(data, profile):
                 if "validityCheck" in e.schema.keys() :
                     log.info(e.schema["validityCheck"])
             log.error(msg)
-            error_messages.append(msg)
+            error_messages.append(dump_error(e))
             log.info(f"------")
             errorPaths.append(e.schema_path[len(e.schema_path)-1])
 
@@ -448,3 +448,18 @@ def get_fallback_profile_path(profileName, path, existProfile):
         profilePath = pathlib.Path(config.PROFILE_LOC, profileName, version)
 
     return profilePath
+
+
+def dump_error(err):
+    error_dict = {
+        "message": err.message,
+        "context": err.context,
+        #"cause": err.cause,
+        #"instance": err.instance,
+        #"path": list(err.path),
+        #"schema": err.schema,
+        #"schema_path": list(err.schema_path),
+        #"validator": err.validator,
+        #"validator_value": err.validator_value
+    }
+    return error_dict
