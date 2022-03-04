@@ -2,7 +2,7 @@ import os
 
 import streamlit as st
 
-import src.command as command
+import command 
 import src.Classes.config as config
 
 

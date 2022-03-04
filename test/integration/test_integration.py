@@ -1,4 +1,4 @@
-import src.command as command
+import command
 from src.Classes.staticJSONLDExtractor import extract
 import test.integration.config as config
 
