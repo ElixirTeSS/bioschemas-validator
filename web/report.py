@@ -1,10 +1,12 @@
-import web.formatting as fmt
+import streamlit as st
 import pandas as pd
+
+import web.formatting as fmt
 
 
 def generate_report_summary(result):
     markdown = f"""
-##### {fmt.header("Validating input:")}
+##### {fmt.header("Validating input:")} {st.session_state.metadata}
 ##### {fmt.header("Against profile:")}  {result['Profile Name']} {result['Profile Version']}
 ## {fmt.header("Result:")}              {fmt.validity(result['Valid'])}
 ## {fmt.header("Summary:")}
@@ -61,23 +63,11 @@ def get_validation_message(subsection):
 
 
 def get_marginality_block(level_name, subsection):
-    block = ""
-    # if len(subsection['Error']) > 0:
-    #     for parameter in subsection['Error']:
-    #         block = f'{block}\n\nAn error is reported for parameter {fmt.colour(parameter, "red")}'
-    # else:
-    #     block = f'{block}\n\nNo errors are reported at {level_name} level'
-
+    block = f'\n\nAll parameters to comply with {level_name} are present.'
+    
     if len(subsection['Missing']) > 0:
-        for parameter in subsection['Missing']:
-            block = f'{block}\n\nFor compliance with {level_name}, {fmt.colour(parameter, "red")} is needed'
-    else:
-        block = f'{block}\n\nAll parameters to comply with {level_name} are present.'
-
-    # if len(subsection['Implemented']) > 0:
-    #     block = f'{block}\n\nThe following parameters have been implemented: {*subsection["Implemented"],}'
-    # else:
-    #     block = f'{block}\n\nNo parameters have been implemented at {level_name} level'
+        missing = ', '.join([fmt.colour(parameter, "red") for parameter in subsection['Missing']])
+        block = f'\n\nNeeded for compliance with {level_name}: {missing}'
 
     return block
 
@@ -85,6 +75,11 @@ def get_marginality_block(level_name, subsection):
 def get_errors_block(error_strings):
     block = ""
     for Id, error in enumerate(error_strings):
+        message = error['message']
+        context = error['context']
+
         tag = fmt.colour(f'[Error {Id}]', 'red')
-        block = f"{block}\n\n{tag} {error}"
+        headline = f"{tag} {message}"
+        block = f"{block}\n\n{fmt.folding_context(headline, context)}"
+
     return block

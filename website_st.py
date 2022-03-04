@@ -40,11 +40,11 @@ with logo_col:
 with name_col:
     st.title('Bioschemas Validator')
 
-# Introduction
-with st.expander('About'):
-    st.markdown('info')
-with st.expander('Help'):
-    st.markdown('more info')
+# # Introduction
+# with st.expander('About'):
+#     st.markdown('info')
+# with st.expander('Help'):
+#     st.markdown('more info')
 
 
 # Columns
