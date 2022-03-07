@@ -16,7 +16,7 @@ st.set_page_config(page_title='Bioschemas Validator',
                    initial_sidebar_state='collapsed')
 
 hide_decoration_bar_style = '<style>header {visibility: hidden;}</style>'
-st.markdown(hide_decoration_bar_style, unsafe_allow_html=True)
+#st.markdown(hide_decoration_bar_style, unsafe_allow_html=True)
 
 # -------------------------------------------------------------------------
 # Initialise session state variables
