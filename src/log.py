@@ -1,4 +1,6 @@
 import click
+import traceback
+
 import src.Classes.config as config
 
 
@@ -20,3 +22,4 @@ def warn(msg):
 
 def error(msg):
     click.secho(msg, fg='red', file=config.OUTPUT_LOCATION_WRITE)
+    click.secho(traceback.format_exc())

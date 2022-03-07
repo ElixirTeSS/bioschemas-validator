@@ -37,12 +37,12 @@ import time
 @click.option("--sitemap_convert", is_flag=True,
               help="Wether the data is a sitemap or a web domain, if raised the url will be extracted from the sitemap")
 def choose(action, target_data, static_jsonld, csv, profile, convert, sitemap_convert):
-    log.stdout(f'Action: {action}')
+    log.stdout(f'Action: {action}, target: {target_data}')
 
     # --------------------------------------------------------------------------
     # Check data has been specified
 
-    if target_data == "":
+    if target_data == "" and action != 'buildprofile':
         log.stdout("Missing target_data parameter")
         exit()
 
@@ -55,8 +55,12 @@ def choose(action, target_data, static_jsonld, csv, profile, convert, sitemap_co
         else:
             buildProfile(target_data)
     elif action == 'validate':
-        validateData(target_data, static_jsonld, csv,
-                     profile, convert, sitemap_convert)
+        validateData(target_data,
+                     static_jsonld,
+                     csv,
+                     profile,
+                     convert,
+                     sitemap_convert)
     elif action == 'tojsonld':
         toJsonLD(target_data, action)
     elif action == "sitemap":
@@ -236,16 +240,16 @@ def validateData(target_data,
         if csvNeeded:
             csvBulkWriter(dataName)
 
+        print(f"OWDB {result}")
         return Result(code=0, result=result)
     except KeyboardInterrupt:
-        click.secho("Program stopped", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+        log.error("Program stopped")
         return Result(code=-1, result="Program stopped")
     except FileNotFoundError as errorMessage:
-        click.secho("Missing file error, please double check", fg="red", file=config.OUTPUT_LOCATION_WRITE)
-        click.secho(f"Error: {errorMessage}", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+        log.error(f"Error: {errorMessage}")
         return Result(code=-1, result=errorMessage)
     except Exception as errorMessage:
-        click.secho(f"Error: {errorMessage}", fg="red", file=config.OUTPUT_LOCATION_WRITE)
+        log.error(f"Error: {errorMessage}")
         return Result(code=-1, result=errorMessage)
 
 
