@@ -1,0 +1,1782 @@
+{
+  "@type": "Phenotype",
+  "version": "0.2-DRAFT",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "@context": "http://schema.org",
+  "$defs": {
+    "URL": {
+      "$id": "#url",
+      "validityCheck": "type URL(according to schema RFC3986)",
+      "type": "string",
+      "pattern": "^[http(s)?://]",
+      "format": "uri",
+      "not": {
+        "type": "string",
+        "pattern": "^[^(http(s)?://)].",
+        "format": "uri"
+      }
+    },
+    "Taxon": {
+      "@type": "Taxon",
+      "version": "0.3-RELEASE-2018_11_10",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "@context": "http://schema.org",
+      "$defs": {},
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "additionalType": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              }
+            },
+            {
+              "$ref": "#/$defs/URL",
+              "validityCheck": "type \"URL\""
+            }
+          ],
+          "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+        },
+        "alternateName": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "validityCheck": "string"
+              }
+            },
+            {
+              "type": "string",
+              "validityCheck": "string"
+            }
+          ],
+          "validityCheck": "We are expecting string in an array or as a single object"
+        },
+        "childTaxon": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/URL",
+                    "validityCheck": "type \"URL\""
+                  },
+                  {
+                    "type": "string",
+                    "validityCheck": "string"
+                  },
+                  {
+                    "$ref": "#/",
+                    "validityCheck": "profile type \"Taxon\""
+                  }
+                ]
+              }
+            },
+            {
+              "$ref": "#/$defs/URL",
+              "validityCheck": "type \"URL\""
+            },
+            {
+              "type": "string",
+              "validityCheck": "string"
+            },
+            {
+              "$ref": "#/",
+              "validityCheck": "profile type \"Taxon\""
+            }
+          ],
+          "validityCheck": "We are expecting one of the following: type \"URL\", string, profile type \"Taxon\""
+        },
+        "hasCategoryCode": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "validityCheck": "\"CategoryCode\"",
+                "properties": {
+                  "@type": {
+                    "const": "CategoryCode",
+                    "validityCheck": "item \"CategoryCode\""
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "validityCheck": "\"CategoryCode\"",
+              "properties": {
+                "@type": {
+                  "const": "CategoryCode",
+                  "validityCheck": "item \"CategoryCode\""
+                }
+              }
+            }
+          ],
+          "validityCheck": "We are expecting \"CategoryCode\" in an array or as a single object"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 1,
+              "items": {
+                "type": "string",
+                "validityCheck": "string"
+              }
+            },
+            {
+              "type": "string",
+              "validityCheck": "string"
+            }
+          ],
+          "validityCheck": "We are expecting string in an array or as a single object"
+        },
+        "parentTaxon": {
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 1,
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/URL",
+                    "validityCheck": "type \"URL\""
+                  },
+                  {
+                    "type": "string",
+                    "validityCheck": "string"
+                  },
+                  {
+                    "$ref": "#/",
+                    "validityCheck": "profile type \"Taxon\""
+                  }
+                ]
+              }
+            },
+            {
+              "$ref": "#/$defs/URL",
+              "validityCheck": "type \"URL\""
+            },
+            {
+              "type": "string",
+              "validityCheck": "string"
+            },
+            {
+              "$ref": "#/",
+              "validityCheck": "profile type \"Taxon\""
+            }
+          ],
+          "validityCheck": "We are expecting one of the following: type \"URL\", string, profile type \"Taxon\""
+        },
+        "sameAs": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              }
+            },
+            {
+              "$ref": "#/$defs/URL",
+              "validityCheck": "type \"URL\""
+            }
+          ],
+          "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+        },
+        "scientificName": {
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 1,
+              "items": {
+                "type": "string",
+                "validityCheck": "string"
+              }
+            },
+            {
+              "type": "string",
+              "validityCheck": "string"
+            }
+          ],
+          "validityCheck": "We are expecting string in an array or as a single object"
+        },
+        "scientificNameAuthorship": {
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 1,
+              "items": {
+                "type": "string",
+                "validityCheck": "string"
+              }
+            },
+            {
+              "type": "string",
+              "validityCheck": "string"
+            }
+          ],
+          "validityCheck": "We are expecting string in an array or as a single object"
+        },
+        "taxonRank": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/URL",
+                    "validityCheck": "type \"URL\""
+                  },
+                  {
+                    "type": "string",
+                    "validityCheck": "string"
+                  },
+                  {
+                    "type": "object",
+                    "validityCheck": "\"PropertyValue\"",
+                    "properties": {
+                      "@type": {
+                        "const": "PropertyValue",
+                        "validityCheck": "item \"PropertyValue\""
+                      },
+                      "url": {
+                        "$ref": "#/$defs/URL"
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "$ref": "#/$defs/URL",
+              "validityCheck": "type \"URL\""
+            },
+            {
+              "type": "string",
+              "validityCheck": "string"
+            },
+            {
+              "type": "object",
+              "validityCheck": "\"PropertyValue\"",
+              "properties": {
+                "@type": {
+                  "const": "PropertyValue",
+                  "validityCheck": "item \"PropertyValue\""
+                },
+                "url": {
+                  "$ref": "#/$defs/URL"
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          ],
+          "validityCheck": "We are expecting one of the following: type \"URL\", string, \"PropertyValue\""
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 1,
+              "items": {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              }
+            },
+            {
+              "$ref": "#/$defs/URL",
+              "validityCheck": "type \"URL\""
+            }
+          ],
+          "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+        },
+        "vernacularName": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "validityCheck": "string"
+              }
+            },
+            {
+              "type": "string",
+              "validityCheck": "string"
+            }
+          ],
+          "validityCheck": "We are expecting string in an array or as a single object"
+        }
+      }
+    }
+  },
+  "required": [
+    "identifier",
+    "name"
+  ],
+  "properties": {
+    "additionalProperty": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "validityCheck": "\"PropertyValue\"",
+            "properties": {
+              "@type": {
+                "const": "PropertyValue",
+                "validityCheck": "item \"PropertyValue\""
+              },
+              "url": {
+                "$ref": "#/$defs/URL"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting \"PropertyValue\" in an array or as a single object"
+    },
+    "alternateName": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "anatomicalLocation": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "validityCheck": "\"DefinedTerm\"",
+            "properties": {
+              "@type": {
+                "const": "DefinedTerm",
+                "validityCheck": "item \"DefinedTerm\""
+              },
+              "url": {
+                "$ref": "#/$defs/URL"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"DefinedTerm\"",
+          "properties": {
+            "@type": {
+              "const": "DefinedTerm",
+              "validityCheck": "item \"DefinedTerm\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting \"DefinedTerm\" in an array or as a single object"
+    },
+    "associatedDisease": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"PropertyValue\"",
+                "properties": {
+                  "@type": {
+                    "const": "PropertyValue",
+                    "validityCheck": "item \"PropertyValue\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"MedicalCondition\"",
+                "properties": {
+                  "@type": {
+                    "const": "MedicalCondition",
+                    "validityCheck": "item \"MedicalCondition\""
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"MedicalCondition\"",
+          "properties": {
+            "@type": {
+              "const": "MedicalCondition",
+              "validityCheck": "item \"MedicalCondition\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", \"PropertyValue\", \"MedicalCondition\""
+    },
+    "bioChemAssociation": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "validityCheck": "\"BioChemEntity\"",
+            "properties": {
+              "@type": {
+                "const": "BioChemEntity",
+                "validityCheck": "item \"BioChemEntity\""
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"BioChemEntity\"",
+          "properties": {
+            "@type": {
+              "const": "BioChemEntity",
+              "validityCheck": "item \"BioChemEntity\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting \"BioChemEntity\" in an array or as a single object"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "hasMolecularFunction": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"PropertyValue\"",
+                "properties": {
+                  "@type": {
+                    "const": "PropertyValue",
+                    "validityCheck": "item \"PropertyValue\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"DefinedTerm\"",
+                "properties": {
+                  "@type": {
+                    "const": "DefinedTerm",
+                    "validityCheck": "item \"DefinedTerm\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"DefinedTerm\"",
+          "properties": {
+            "@type": {
+              "const": "DefinedTerm",
+              "validityCheck": "item \"DefinedTerm\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", \"PropertyValue\", \"DefinedTerm\""
+    },
+    "identifier": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "string",
+                "validityCheck": "string"
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"PropertyValue\"",
+                "properties": {
+                  "@type": {
+                    "const": "PropertyValue",
+                    "validityCheck": "item \"PropertyValue\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", string, \"PropertyValue\""
+    },
+    "image": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"ImageObject\"",
+                "properties": {
+                  "@type": {
+                    "const": "ImageObject",
+                    "validityCheck": "item \"ImageObject\""
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"ImageObject\"",
+          "properties": {
+            "@type": {
+              "const": "ImageObject",
+              "validityCheck": "item \"ImageObject\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", \"ImageObject\""
+    },
+    "isInvolvedInBiologicalProcess": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"PropertyValue\"",
+                "properties": {
+                  "@type": {
+                    "const": "PropertyValue",
+                    "validityCheck": "item \"PropertyValue\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"DefinedTerm\"",
+                "properties": {
+                  "@type": {
+                    "const": "DefinedTerm",
+                    "validityCheck": "item \"DefinedTerm\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"DefinedTerm\"",
+          "properties": {
+            "@type": {
+              "const": "DefinedTerm",
+              "validityCheck": "item \"DefinedTerm\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", \"PropertyValue\", \"DefinedTerm\""
+    },
+    "isLocatedInSubcellularLocation": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"PropertyValue\"",
+                "properties": {
+                  "@type": {
+                    "const": "PropertyValue",
+                    "validityCheck": "item \"PropertyValue\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"DefinedTerm\"",
+                "properties": {
+                  "@type": {
+                    "const": "DefinedTerm",
+                    "validityCheck": "item \"DefinedTerm\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"DefinedTerm\"",
+          "properties": {
+            "@type": {
+              "const": "DefinedTerm",
+              "validityCheck": "item \"DefinedTerm\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", \"PropertyValue\", \"DefinedTerm\""
+    },
+    "mainEntityOfPage": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "object",
+                "validityCheck": "schema.org type \"CreativeWork\"",
+                "properties": {
+                  "@type": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "enum": [
+                            "3DModel",
+                            "APIReference",
+                            "AboutPage",
+                            "AdvertiserContentArticle",
+                            "AmpStory",
+                            "AnalysisNewsArticle",
+                            "Answer",
+                            "ArchiveComponent",
+                            "Article",
+                            "AskPublicNewsArticle",
+                            "Atlas",
+                            "AudioObject",
+                            "Audiobook",
+                            "Audiobook",
+                            "BackgroundNewsArticle",
+                            "Barcode",
+                            "Blog",
+                            "BlogPosting",
+                            "Book",
+                            "BookSeries",
+                            "CategoryCodeSet",
+                            "Chapter",
+                            "CheckoutPage",
+                            "Claim",
+                            "ClaimReview",
+                            "Clip",
+                            "Code",
+                            "Collection",
+                            "CollectionPage",
+                            "ComicCoverArt",
+                            "ComicCoverArt",
+                            "ComicIssue",
+                            "ComicSeries",
+                            "ComicStory",
+                            "Comment",
+                            "CompleteDataFeed",
+                            "ContactPage",
+                            "Conversation",
+                            "CorrectionComment",
+                            "Course",
+                            "Course",
+                            "CoverArt",
+                            "CreativeWork",
+                            "CreativeWorkSeason",
+                            "CreativeWorkSeries",
+                            "CriticReview",
+                            "DataCatalog",
+                            "DataDownload",
+                            "DataFeed",
+                            "Dataset",
+                            "DefinedTermSet",
+                            "Diet",
+                            "DigitalDocument",
+                            "DiscussionForumPosting",
+                            "Drawing",
+                            "EducationalOccupationalCredential",
+                            "EmailMessage",
+                            "EmployerReview",
+                            "Episode",
+                            "ExercisePlan",
+                            "FAQPage",
+                            "Game",
+                            "Guide",
+                            "HealthTopicContent",
+                            "HowTo",
+                            "HowToDirection",
+                            "HowToSection",
+                            "HowToStep",
+                            "HowToTip",
+                            "HyperToc",
+                            "HyperTocEntry",
+                            "ImageGallery",
+                            "ImageObject",
+                            "ItemPage",
+                            "LearningResource",
+                            "Legislation",
+                            "LegislationObject",
+                            "LegislationObject",
+                            "LiveBlogPosting",
+                            "Manuscript",
+                            "Map",
+                            "MathSolver",
+                            "MediaGallery",
+                            "MediaObject",
+                            "MediaReview",
+                            "MedicalScholarlyArticle",
+                            "MedicalWebPage",
+                            "Menu",
+                            "MenuSection",
+                            "Message",
+                            "MobileApplication",
+                            "Movie",
+                            "MovieClip",
+                            "MovieSeries",
+                            "MusicAlbum",
+                            "MusicComposition",
+                            "MusicPlaylist",
+                            "MusicRecording",
+                            "MusicRelease",
+                            "MusicVideoObject",
+                            "NewsArticle",
+                            "Newspaper",
+                            "NoteDigitalDocument",
+                            "OpinionNewsArticle",
+                            "Painting",
+                            "Periodical",
+                            "Photograph",
+                            "Play",
+                            "PodcastEpisode",
+                            "PodcastSeason",
+                            "PodcastSeries",
+                            "Poster",
+                            "PresentationDigitalDocument",
+                            "ProductCollection",
+                            "ProfilePage",
+                            "PublicationIssue",
+                            "PublicationVolume",
+                            "QAPage",
+                            "Question",
+                            "Quiz",
+                            "Quotation",
+                            "RadioClip",
+                            "RadioEpisode",
+                            "RadioSeason",
+                            "RadioSeries",
+                            "RealEstateListing",
+                            "Recipe",
+                            "Recommendation",
+                            "Report",
+                            "ReportageNewsArticle",
+                            "Review",
+                            "ReviewNewsArticle",
+                            "ReviewNewsArticle",
+                            "SatiricalArticle",
+                            "ScholarlyArticle",
+                            "Sculpture",
+                            "SearchResultsPage",
+                            "Season",
+                            "SheetMusic",
+                            "ShortStory",
+                            "SiteNavigationElement",
+                            "SocialMediaPosting",
+                            "SoftwareApplication",
+                            "SoftwareSourceCode",
+                            "SpecialAnnouncement",
+                            "SpreadsheetDigitalDocument",
+                            "TVClip",
+                            "TVEpisode",
+                            "TVSeason",
+                            "TVSeason",
+                            "TVSeries",
+                            "TVSeries",
+                            "Table",
+                            "TechArticle",
+                            "TextDigitalDocument",
+                            "Thesis",
+                            "UserReview",
+                            "VideoGallery",
+                            "VideoGame",
+                            "VideoGame",
+                            "VideoGameClip",
+                            "VideoGameSeries",
+                            "VideoObject",
+                            "VisualArtwork",
+                            "WPAdBlock",
+                            "WPFooter",
+                            "WPHeader",
+                            "WPSideBar",
+                            "WebApplication",
+                            "WebContent ",
+                            "WebPage",
+                            "WebPageElement",
+                            "WebSite"
+                          ]
+                        }
+                      },
+                      {
+                        "enum": [
+                          "3DModel",
+                          "APIReference",
+                          "AboutPage",
+                          "AdvertiserContentArticle",
+                          "AmpStory",
+                          "AnalysisNewsArticle",
+                          "Answer",
+                          "ArchiveComponent",
+                          "Article",
+                          "AskPublicNewsArticle",
+                          "Atlas",
+                          "AudioObject",
+                          "Audiobook",
+                          "Audiobook",
+                          "BackgroundNewsArticle",
+                          "Barcode",
+                          "Blog",
+                          "BlogPosting",
+                          "Book",
+                          "BookSeries",
+                          "CategoryCodeSet",
+                          "Chapter",
+                          "CheckoutPage",
+                          "Claim",
+                          "ClaimReview",
+                          "Clip",
+                          "Code",
+                          "Collection",
+                          "CollectionPage",
+                          "ComicCoverArt",
+                          "ComicCoverArt",
+                          "ComicIssue",
+                          "ComicSeries",
+                          "ComicStory",
+                          "Comment",
+                          "CompleteDataFeed",
+                          "ContactPage",
+                          "Conversation",
+                          "CorrectionComment",
+                          "Course",
+                          "Course",
+                          "CoverArt",
+                          "CreativeWork",
+                          "CreativeWorkSeason",
+                          "CreativeWorkSeries",
+                          "CriticReview",
+                          "DataCatalog",
+                          "DataDownload",
+                          "DataFeed",
+                          "Dataset",
+                          "DefinedTermSet",
+                          "Diet",
+                          "DigitalDocument",
+                          "DiscussionForumPosting",
+                          "Drawing",
+                          "EducationalOccupationalCredential",
+                          "EmailMessage",
+                          "EmployerReview",
+                          "Episode",
+                          "ExercisePlan",
+                          "FAQPage",
+                          "Game",
+                          "Guide",
+                          "HealthTopicContent",
+                          "HowTo",
+                          "HowToDirection",
+                          "HowToSection",
+                          "HowToStep",
+                          "HowToTip",
+                          "HyperToc",
+                          "HyperTocEntry",
+                          "ImageGallery",
+                          "ImageObject",
+                          "ItemPage",
+                          "LearningResource",
+                          "Legislation",
+                          "LegislationObject",
+                          "LegislationObject",
+                          "LiveBlogPosting",
+                          "Manuscript",
+                          "Map",
+                          "MathSolver",
+                          "MediaGallery",
+                          "MediaObject",
+                          "MediaReview",
+                          "MedicalScholarlyArticle",
+                          "MedicalWebPage",
+                          "Menu",
+                          "MenuSection",
+                          "Message",
+                          "MobileApplication",
+                          "Movie",
+                          "MovieClip",
+                          "MovieSeries",
+                          "MusicAlbum",
+                          "MusicComposition",
+                          "MusicPlaylist",
+                          "MusicRecording",
+                          "MusicRelease",
+                          "MusicVideoObject",
+                          "NewsArticle",
+                          "Newspaper",
+                          "NoteDigitalDocument",
+                          "OpinionNewsArticle",
+                          "Painting",
+                          "Periodical",
+                          "Photograph",
+                          "Play",
+                          "PodcastEpisode",
+                          "PodcastSeason",
+                          "PodcastSeries",
+                          "Poster",
+                          "PresentationDigitalDocument",
+                          "ProductCollection",
+                          "ProfilePage",
+                          "PublicationIssue",
+                          "PublicationVolume",
+                          "QAPage",
+                          "Question",
+                          "Quiz",
+                          "Quotation",
+                          "RadioClip",
+                          "RadioEpisode",
+                          "RadioSeason",
+                          "RadioSeries",
+                          "RealEstateListing",
+                          "Recipe",
+                          "Recommendation",
+                          "Report",
+                          "ReportageNewsArticle",
+                          "Review",
+                          "ReviewNewsArticle",
+                          "ReviewNewsArticle",
+                          "SatiricalArticle",
+                          "ScholarlyArticle",
+                          "Sculpture",
+                          "SearchResultsPage",
+                          "Season",
+                          "SheetMusic",
+                          "ShortStory",
+                          "SiteNavigationElement",
+                          "SocialMediaPosting",
+                          "SoftwareApplication",
+                          "SoftwareSourceCode",
+                          "SpecialAnnouncement",
+                          "SpreadsheetDigitalDocument",
+                          "TVClip",
+                          "TVEpisode",
+                          "TVSeason",
+                          "TVSeason",
+                          "TVSeries",
+                          "TVSeries",
+                          "Table",
+                          "TechArticle",
+                          "TextDigitalDocument",
+                          "Thesis",
+                          "UserReview",
+                          "VideoGallery",
+                          "VideoGame",
+                          "VideoGame",
+                          "VideoGameClip",
+                          "VideoGameSeries",
+                          "VideoObject",
+                          "VisualArtwork",
+                          "WPAdBlock",
+                          "WPFooter",
+                          "WPHeader",
+                          "WPSideBar",
+                          "WebApplication",
+                          "WebContent ",
+                          "WebPage",
+                          "WebPageElement",
+                          "WebSite"
+                        ]
+                      }
+                    ],
+                    "validityCheck": "schema.org type or subtype of\"CreativeWork\""
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "object",
+          "validityCheck": "schema.org type \"CreativeWork\"",
+          "properties": {
+            "@type": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "3DModel",
+                      "APIReference",
+                      "AboutPage",
+                      "AdvertiserContentArticle",
+                      "AmpStory",
+                      "AnalysisNewsArticle",
+                      "Answer",
+                      "ArchiveComponent",
+                      "Article",
+                      "AskPublicNewsArticle",
+                      "Atlas",
+                      "AudioObject",
+                      "Audiobook",
+                      "Audiobook",
+                      "BackgroundNewsArticle",
+                      "Barcode",
+                      "Blog",
+                      "BlogPosting",
+                      "Book",
+                      "BookSeries",
+                      "CategoryCodeSet",
+                      "Chapter",
+                      "CheckoutPage",
+                      "Claim",
+                      "ClaimReview",
+                      "Clip",
+                      "Code",
+                      "Collection",
+                      "CollectionPage",
+                      "ComicCoverArt",
+                      "ComicCoverArt",
+                      "ComicIssue",
+                      "ComicSeries",
+                      "ComicStory",
+                      "Comment",
+                      "CompleteDataFeed",
+                      "ContactPage",
+                      "Conversation",
+                      "CorrectionComment",
+                      "Course",
+                      "Course",
+                      "CoverArt",
+                      "CreativeWork",
+                      "CreativeWorkSeason",
+                      "CreativeWorkSeries",
+                      "CriticReview",
+                      "DataCatalog",
+                      "DataDownload",
+                      "DataFeed",
+                      "Dataset",
+                      "DefinedTermSet",
+                      "Diet",
+                      "DigitalDocument",
+                      "DiscussionForumPosting",
+                      "Drawing",
+                      "EducationalOccupationalCredential",
+                      "EmailMessage",
+                      "EmployerReview",
+                      "Episode",
+                      "ExercisePlan",
+                      "FAQPage",
+                      "Game",
+                      "Guide",
+                      "HealthTopicContent",
+                      "HowTo",
+                      "HowToDirection",
+                      "HowToSection",
+                      "HowToStep",
+                      "HowToTip",
+                      "HyperToc",
+                      "HyperTocEntry",
+                      "ImageGallery",
+                      "ImageObject",
+                      "ItemPage",
+                      "LearningResource",
+                      "Legislation",
+                      "LegislationObject",
+                      "LegislationObject",
+                      "LiveBlogPosting",
+                      "Manuscript",
+                      "Map",
+                      "MathSolver",
+                      "MediaGallery",
+                      "MediaObject",
+                      "MediaReview",
+                      "MedicalScholarlyArticle",
+                      "MedicalWebPage",
+                      "Menu",
+                      "MenuSection",
+                      "Message",
+                      "MobileApplication",
+                      "Movie",
+                      "MovieClip",
+                      "MovieSeries",
+                      "MusicAlbum",
+                      "MusicComposition",
+                      "MusicPlaylist",
+                      "MusicRecording",
+                      "MusicRelease",
+                      "MusicVideoObject",
+                      "NewsArticle",
+                      "Newspaper",
+                      "NoteDigitalDocument",
+                      "OpinionNewsArticle",
+                      "Painting",
+                      "Periodical",
+                      "Photograph",
+                      "Play",
+                      "PodcastEpisode",
+                      "PodcastSeason",
+                      "PodcastSeries",
+                      "Poster",
+                      "PresentationDigitalDocument",
+                      "ProductCollection",
+                      "ProfilePage",
+                      "PublicationIssue",
+                      "PublicationVolume",
+                      "QAPage",
+                      "Question",
+                      "Quiz",
+                      "Quotation",
+                      "RadioClip",
+                      "RadioEpisode",
+                      "RadioSeason",
+                      "RadioSeries",
+                      "RealEstateListing",
+                      "Recipe",
+                      "Recommendation",
+                      "Report",
+                      "ReportageNewsArticle",
+                      "Review",
+                      "ReviewNewsArticle",
+                      "ReviewNewsArticle",
+                      "SatiricalArticle",
+                      "ScholarlyArticle",
+                      "Sculpture",
+                      "SearchResultsPage",
+                      "Season",
+                      "SheetMusic",
+                      "ShortStory",
+                      "SiteNavigationElement",
+                      "SocialMediaPosting",
+                      "SoftwareApplication",
+                      "SoftwareSourceCode",
+                      "SpecialAnnouncement",
+                      "SpreadsheetDigitalDocument",
+                      "TVClip",
+                      "TVEpisode",
+                      "TVSeason",
+                      "TVSeason",
+                      "TVSeries",
+                      "TVSeries",
+                      "Table",
+                      "TechArticle",
+                      "TextDigitalDocument",
+                      "Thesis",
+                      "UserReview",
+                      "VideoGallery",
+                      "VideoGame",
+                      "VideoGame",
+                      "VideoGameClip",
+                      "VideoGameSeries",
+                      "VideoObject",
+                      "VisualArtwork",
+                      "WPAdBlock",
+                      "WPFooter",
+                      "WPHeader",
+                      "WPSideBar",
+                      "WebApplication",
+                      "WebContent ",
+                      "WebPage",
+                      "WebPageElement",
+                      "WebSite"
+                    ]
+                  }
+                },
+                {
+                  "enum": [
+                    "3DModel",
+                    "APIReference",
+                    "AboutPage",
+                    "AdvertiserContentArticle",
+                    "AmpStory",
+                    "AnalysisNewsArticle",
+                    "Answer",
+                    "ArchiveComponent",
+                    "Article",
+                    "AskPublicNewsArticle",
+                    "Atlas",
+                    "AudioObject",
+                    "Audiobook",
+                    "Audiobook",
+                    "BackgroundNewsArticle",
+                    "Barcode",
+                    "Blog",
+                    "BlogPosting",
+                    "Book",
+                    "BookSeries",
+                    "CategoryCodeSet",
+                    "Chapter",
+                    "CheckoutPage",
+                    "Claim",
+                    "ClaimReview",
+                    "Clip",
+                    "Code",
+                    "Collection",
+                    "CollectionPage",
+                    "ComicCoverArt",
+                    "ComicCoverArt",
+                    "ComicIssue",
+                    "ComicSeries",
+                    "ComicStory",
+                    "Comment",
+                    "CompleteDataFeed",
+                    "ContactPage",
+                    "Conversation",
+                    "CorrectionComment",
+                    "Course",
+                    "Course",
+                    "CoverArt",
+                    "CreativeWork",
+                    "CreativeWorkSeason",
+                    "CreativeWorkSeries",
+                    "CriticReview",
+                    "DataCatalog",
+                    "DataDownload",
+                    "DataFeed",
+                    "Dataset",
+                    "DefinedTermSet",
+                    "Diet",
+                    "DigitalDocument",
+                    "DiscussionForumPosting",
+                    "Drawing",
+                    "EducationalOccupationalCredential",
+                    "EmailMessage",
+                    "EmployerReview",
+                    "Episode",
+                    "ExercisePlan",
+                    "FAQPage",
+                    "Game",
+                    "Guide",
+                    "HealthTopicContent",
+                    "HowTo",
+                    "HowToDirection",
+                    "HowToSection",
+                    "HowToStep",
+                    "HowToTip",
+                    "HyperToc",
+                    "HyperTocEntry",
+                    "ImageGallery",
+                    "ImageObject",
+                    "ItemPage",
+                    "LearningResource",
+                    "Legislation",
+                    "LegislationObject",
+                    "LegislationObject",
+                    "LiveBlogPosting",
+                    "Manuscript",
+                    "Map",
+                    "MathSolver",
+                    "MediaGallery",
+                    "MediaObject",
+                    "MediaReview",
+                    "MedicalScholarlyArticle",
+                    "MedicalWebPage",
+                    "Menu",
+                    "MenuSection",
+                    "Message",
+                    "MobileApplication",
+                    "Movie",
+                    "MovieClip",
+                    "MovieSeries",
+                    "MusicAlbum",
+                    "MusicComposition",
+                    "MusicPlaylist",
+                    "MusicRecording",
+                    "MusicRelease",
+                    "MusicVideoObject",
+                    "NewsArticle",
+                    "Newspaper",
+                    "NoteDigitalDocument",
+                    "OpinionNewsArticle",
+                    "Painting",
+                    "Periodical",
+                    "Photograph",
+                    "Play",
+                    "PodcastEpisode",
+                    "PodcastSeason",
+                    "PodcastSeries",
+                    "Poster",
+                    "PresentationDigitalDocument",
+                    "ProductCollection",
+                    "ProfilePage",
+                    "PublicationIssue",
+                    "PublicationVolume",
+                    "QAPage",
+                    "Question",
+                    "Quiz",
+                    "Quotation",
+                    "RadioClip",
+                    "RadioEpisode",
+                    "RadioSeason",
+                    "RadioSeries",
+                    "RealEstateListing",
+                    "Recipe",
+                    "Recommendation",
+                    "Report",
+                    "ReportageNewsArticle",
+                    "Review",
+                    "ReviewNewsArticle",
+                    "ReviewNewsArticle",
+                    "SatiricalArticle",
+                    "ScholarlyArticle",
+                    "Sculpture",
+                    "SearchResultsPage",
+                    "Season",
+                    "SheetMusic",
+                    "ShortStory",
+                    "SiteNavigationElement",
+                    "SocialMediaPosting",
+                    "SoftwareApplication",
+                    "SoftwareSourceCode",
+                    "SpecialAnnouncement",
+                    "SpreadsheetDigitalDocument",
+                    "TVClip",
+                    "TVEpisode",
+                    "TVSeason",
+                    "TVSeason",
+                    "TVSeries",
+                    "TVSeries",
+                    "Table",
+                    "TechArticle",
+                    "TextDigitalDocument",
+                    "Thesis",
+                    "UserReview",
+                    "VideoGallery",
+                    "VideoGame",
+                    "VideoGame",
+                    "VideoGameClip",
+                    "VideoGameSeries",
+                    "VideoObject",
+                    "VisualArtwork",
+                    "WPAdBlock",
+                    "WPFooter",
+                    "WPHeader",
+                    "WPSideBar",
+                    "WebApplication",
+                    "WebContent ",
+                    "WebPage",
+                    "WebPageElement",
+                    "WebSite"
+                  ]
+                }
+              ],
+              "validityCheck": "schema.org type or subtype of\"CreativeWork\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", schema.org type \"CreativeWork\""
+    },
+    "name": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "sameAs": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "taxonomicRange": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "string",
+                "validityCheck": "string"
+              },
+              {
+                "$ref": "#/$defs/Taxon",
+                "validityCheck": "profile type \"Taxon\", version 0.3-RELEASE-2018_11_10"
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        },
+        {
+          "$ref": "#/$defs/Taxon",
+          "validityCheck": "profile type \"Taxon\", version 0.3-RELEASE-2018_11_10"
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", string, profile type \"Taxon\", version 0.3-RELEASE-2018_11_10"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "valueReference": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "validityCheck": "\"DefinedTerm\"",
+            "properties": {
+              "@type": {
+                "const": "DefinedTerm",
+                "validityCheck": "item \"DefinedTerm\""
+              },
+              "url": {
+                "$ref": "#/$defs/URL"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"DefinedTerm\"",
+          "properties": {
+            "@type": {
+              "const": "DefinedTerm",
+              "validityCheck": "item \"DefinedTerm\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting \"DefinedTerm\" in an array or as a single object"
+    }
+  }
+}

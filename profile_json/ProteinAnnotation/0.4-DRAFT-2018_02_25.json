@@ -1,0 +1,464 @@
+{
+  "@type": "ProteinAnnotation",
+  "version": "0.4-DRAFT-2018_02_25",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "@context": "http://schema.org",
+  "$defs": {
+    "URL": {
+      "$id": "#url",
+      "validityCheck": "type URL(according to schema RFC3986)",
+      "type": "string",
+      "pattern": "^[http(s)?://]",
+      "format": "uri",
+      "not": {
+        "type": "string",
+        "pattern": "^[^(http(s)?://)].",
+        "format": "uri"
+      }
+    }
+  },
+  "required": [
+    "additionalType",
+    "identifier",
+    "rdf:type"
+  ],
+  "properties": {
+    "additionalProperty": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "validityCheck": "\"PropertyValue\"",
+            "properties": {
+              "@type": {
+                "const": "PropertyValue",
+                "validityCheck": "item \"PropertyValue\""
+              },
+              "url": {
+                "$ref": "#/$defs/URL"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting \"PropertyValue\" in an array or as a single object"
+    },
+    "additionalType": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "alternateName": {},
+    "contains": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"BioChemEntity\"",
+                "properties": {
+                  "@type": {
+                    "const": "BioChemEntity",
+                    "validityCheck": "item \"BioChemEntity\""
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"BioChemEntity\"",
+          "properties": {
+            "@type": {
+              "const": "BioChemEntity",
+              "validityCheck": "item \"BioChemEntity\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", \"BioChemEntity\""
+    },
+    "creationMethod": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "validityCheck": "\"PropertyValue\"",
+            "properties": {
+              "@type": {
+                "const": "PropertyValue",
+                "validityCheck": "item \"PropertyValue\""
+              },
+              "url": {
+                "$ref": "#/$defs/URL"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting \"PropertyValue\" in an array or as a single object"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "hasRepresentation": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "validityCheck": "\"PropertyValueorTextorURL\"",
+            "properties": {
+              "@type": {
+                "const": "PropertyValueorTextorURL",
+                "validityCheck": "item \"PropertyValueorTextorURL\""
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValueorTextorURL\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValueorTextorURL",
+              "validityCheck": "item \"PropertyValueorTextorURL\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting \"PropertyValueorTextorURL\" in an array or as a single object"
+    },
+    "identifier": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "string",
+                "validityCheck": "string"
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"PropertyValue\"",
+                "properties": {
+                  "@type": {
+                    "const": "PropertyValue",
+                    "validityCheck": "item \"PropertyValue\""
+                  },
+                  "url": {
+                    "$ref": "#/$defs/URL"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PropertyValue\"",
+          "properties": {
+            "@type": {
+              "const": "PropertyValue",
+              "validityCheck": "item \"PropertyValue\""
+            },
+            "url": {
+              "$ref": "#/$defs/URL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", string, \"PropertyValue\""
+    },
+    "image": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/URL",
+                "validityCheck": "type \"URL\""
+              },
+              {
+                "type": "object",
+                "validityCheck": "\"ImageObject\"",
+                "properties": {
+                  "@type": {
+                    "const": "ImageObject",
+                    "validityCheck": "item \"ImageObject\""
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"ImageObject\"",
+          "properties": {
+            "@type": {
+              "const": "ImageObject",
+              "validityCheck": "item \"ImageObject\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting one of the following: type \"URL\", \"ImageObject\""
+    },
+    "isContainedIn": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "validityCheck": "\"BioChemEntityorURL\"",
+            "properties": {
+              "@type": {
+                "const": "BioChemEntityorURL",
+                "validityCheck": "item \"BioChemEntityorURL\""
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"BioChemEntityorURL\"",
+          "properties": {
+            "@type": {
+              "const": "BioChemEntityorURL",
+              "validityCheck": "item \"BioChemEntityorURL\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting \"BioChemEntityorURL\" in an array or as a single object"
+    },
+    "location": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "validityCheck": "\"PlaceorPostalAddressorPropertyValueorTextorURL\"",
+            "properties": {
+              "@type": {
+                "const": "PlaceorPostalAddressorPropertyValueorTextorURL",
+                "validityCheck": "item \"PlaceorPostalAddressorPropertyValueorTextorURL\""
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"PlaceorPostalAddressorPropertyValueorTextorURL\"",
+          "properties": {
+            "@type": {
+              "const": "PlaceorPostalAddressorPropertyValueorTextorURL",
+              "validityCheck": "item \"PlaceorPostalAddressorPropertyValueorTextorURL\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting \"PlaceorPostalAddressorPropertyValueorTextorURL\" in an array or as a single object"
+    },
+    "mainEntityOfPage": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "validityCheck": "\"DataRecordorURL\"",
+            "properties": {
+              "@type": {
+                "const": "DataRecordorURL",
+                "validityCheck": "item \"DataRecordorURL\""
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "validityCheck": "\"DataRecordorURL\"",
+          "properties": {
+            "@type": {
+              "const": "DataRecordorURL",
+              "validityCheck": "item \"DataRecordorURL\""
+            }
+          }
+        }
+      ],
+      "validityCheck": "We are expecting \"DataRecordorURL\" in an array or as a single object"
+    },
+    "name": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "validityCheck": "string"
+          }
+        },
+        {
+          "type": "string",
+          "validityCheck": "string"
+        }
+      ],
+      "validityCheck": "We are expecting string in an array or as a single object"
+    },
+    "rdf:type": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "sameAs": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/URL",
+            "validityCheck": "type \"URL\""
+          }
+        },
+        {
+          "$ref": "#/$defs/URL",
+          "validityCheck": "type \"URL\""
+        }
+      ],
+      "validityCheck": "We are expecting type \"URL\" in an array or as a single object"
+    }
+  }
+}
