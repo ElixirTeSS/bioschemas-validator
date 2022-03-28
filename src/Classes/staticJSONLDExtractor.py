@@ -79,7 +79,7 @@ def extract(oriPath):
 
         # list of syntaxes the library extruct, 'json-ld' is removed from the list as it is prioritied
         syntaxesList = ['microdata',  'opengraph', 'microformat', 'rdfa', 'dublincore']
-        
+
         data = extruct.extract(html, base_url)
 
         resultList = list()
