@@ -239,7 +239,6 @@ def validateData(target_data,
         if csvNeeded:
             csvBulkWriter(dataName)
 
-        print(f"OWDB {result}")
         return Result(code=0, result=result)
     except KeyboardInterrupt:
         log.error("Program stopped")

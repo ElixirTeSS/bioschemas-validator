@@ -23,8 +23,9 @@ COPY web web
 RUN python command.py buildprofile
 
 ENV PORT=${PORT:-8501}
-EXPOSE 8501
+EXPOSE $PORT
 
-ENTRYPOINT streamlit run --server.port $PORT website_st.py
+CMD streamlit run --server.port $PORT website_st.py
+#ENTRYPOINT streamlit run --server.port $PORT website_st.py
 #CMD ["website_st.py"]
 
