@@ -1,13 +1,12 @@
-beautifulsoup4==4.10.0
+beautifulsoup4==4.9.3
 click==8.0.1
-extruct==0.12.0
-Flask==2.0.2
+extruct==0.13.0
 jsonschema==3.2.0
-pandas==1.1.5
+pandas
 PyLD==2.0.3
 python_dateutil==2.8.2
 requests==2.26.0
-streamlit==1.5.0
+streamlit
 toml==0.10.2
 tqdm==4.60.0
 ultimate_sitemap_parser==0.5
