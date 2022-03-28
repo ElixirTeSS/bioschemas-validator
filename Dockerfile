@@ -13,7 +13,9 @@ WORKDIR /validator
 
 RUN python command.py buildprofile 
 
+ENV PORT=${PORT:-8501}
 EXPOSE 8501
-ENTRYPOINT ["streamlit", "run", "--server.port", "$PORT"]
-CMD ["website_st.py"]
+
+ENTRYPOINT streamlit run --server.port $PORT website_st.py
+#CMD ["website_st.py"]
 
