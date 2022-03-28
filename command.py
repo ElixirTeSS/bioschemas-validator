@@ -89,7 +89,7 @@ def buildProfile(profile_to_make):
     Args:
         profile_to_make (string): A path to a file with the list of profile YML file that want to build instead of all the profile in config.YML_LOC
     """
-#     the validating of the schemas is done as part of build_profile method
+    #     the validating of the schemas is done as part of build_profile method
     if profile_to_make != 'all':
         path = pathlib.Path(profile_to_make)
         if path.suffix == ".html":
@@ -115,7 +115,6 @@ def buildProfile(profile_to_make):
     else:
         path = pathlib.Path(config.YML_LOC)
         totalProfileNum = len(list(path.rglob('*.html')))
-        
         start_time = time.time()
         for ii, line in enumerate(path.glob('**/*.html')):
             build_profile(line)
