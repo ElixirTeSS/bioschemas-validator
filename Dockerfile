@@ -11,9 +11,9 @@ RUN pip install -r requirements.txt
 COPY ./ /validator
 WORKDIR /validator
 
-RUN python command.py buildprofile
+RUN python command.py buildprofile 
 
 EXPOSE 8501
-ENTRYPOINT ["streamlit", "run"]
+ENTRYPOINT ["streamlit", "run", "--server.port", "$PORT"]
 CMD ["website_st.py"]
 
