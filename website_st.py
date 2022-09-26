@@ -41,8 +41,8 @@ with name_col:
     st.title('Bioschemas Validator')
 
 # # Introduction
-# with st.expander('About'):
-#     st.markdown('info')
+with st.expander('About'):
+    st.markdown('This validator is currently in beta! Help us out by raising issues on our [Github page](https://github.com/ElixirTeSS/bioschemas-validator/issues)')
 # with st.expander('Help'):
 #     st.markdown('more info')
 
@@ -101,7 +101,7 @@ with output_col:
         # Report summary
         markdown_text = report.generate_report_summary(result)
         st.markdown(markdown_text, unsafe_allow_html=True)
-        
+
         report_dataframe = report.get_dataframe(result)
         st.dataframe(report_dataframe)
 
