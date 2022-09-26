@@ -16,8 +16,6 @@ def generate_report_summary(result):
 
 def generate_report_body(result):
     markdown = f"""
-### {fmt.header("Validation Report")}
-{get_errors_block(result['Error Messages'])}
 ### {fmt.header("Marginality Report")}
 ###### Minimum
 {get_marginality_block('Minimum', result['Minimum'])}
@@ -25,6 +23,8 @@ def generate_report_body(result):
 {get_marginality_block('Recommended', result['Recommended'])}
 ###### Optional
 {get_marginality_block('Optional', result['Optional'])}
+### {fmt.header("Validation Report")}
+{get_errors_block(result['Error Messages'])}
 """
     return markdown
 
