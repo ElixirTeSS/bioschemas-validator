@@ -13,7 +13,12 @@ import web.report as report
 st.set_page_config(page_title='Bioschemas Validator',
                    page_icon='web/favicon-32x32.png',
                    layout='wide',
-                   initial_sidebar_state='collapsed')
+                   initial_sidebar_state='collapsed',
+                   menu_items={
+        		        'Get Help': 'https://bioschemas.org/community/',
+		                'Report a bug': 'https://github.com/ElixirTeSS/bioschemas-validator/issues/',
+		                'About': '# Bioschemas validation'
+    		           })
 
 hide_decoration_bar_style = '<style>header {visibility: hidden;}</style>'
 #st.markdown(hide_decoration_bar_style, unsafe_allow_html=True)
