@@ -68,7 +68,18 @@ Firstly, to get the repository either download the zip or use:
 Then run this to install the required libraries.
 
 `$ pip install -r requirements.txt` or `$ pip3 install -r requirements.txt`
- 
+
+#### Run in a container
+
+First build the Docker container via:
+```
+docker build -t bioschemas-validator .
+```
+
+and then run via
+```
+docker run --rm bioschemas-validator
+```
  
 ### Step 1
 #### Build the profile JSON schema
@@ -84,9 +95,9 @@ Then run this to install the required libraries.
   
   For example:
 
-*   `$ python src/command.py buildprofile`
-*   `$ python src/command.py buildprofile --target_data=test/profile_lib/demo_profile.txt`
-*   `$ python src/command.py buildprofile --target_data=profile_yml/Gene/0.7-RELEASE.html`
+*   `$ python command.py buildprofile`
+*   `$ python command.py buildprofile --target_data=test/profile_lib/demo_profile.txt`
+*   `$ python command.py buildprofile --target_data=profile_yml/Gene/0.7-RELEASE.html`
 
 
 
@@ -124,7 +135,7 @@ There are several optional parameter for this route:
   
 *   `$ python command.py validate --target_data=profileLive/jrc/jrc_1.jsonld --csv="all"`
 *   `$ python command.py validate --target_data=profileLive/jrc/jrc_1.jsonld`
-*   `$ python src/command.py validate --target_data=https://nanocommons.github.io/specifications/jrc/ --static_jsonld`
+*   `$ python command.py validate --target_data=https://nanocommons.github.io/specifications/jrc/ --static_jsonld`
 
 
 ### EXTRA ROUTES
@@ -135,7 +146,7 @@ It will convert the files to JSON-LD before validation, without the validation.
 `target_data` is necessary and can be a path to a directory or a file of paths to metadata.
 
   For example:
-  * ` $ python src/command.py tojsonld --target_data=test/metadata_lib/format_NQuads`
+  * ` $ python command.py tojsonld --target_data=test/metadata_lib/format_NQuads`
   
   
 #### Route 2 - sitemap
@@ -145,7 +156,7 @@ It will extract the URL from a downloaded sitemap or look for a sitemap from a w
 `target_data` is necessary and can be a path to a directory or a file of paths to metadata.
 
   For example:
-  *  `$ python src/command.py sitemap --target_data=https://disprot.org/`
+  *  `$ python command.py sitemap --target_data=https://disprot.org/`
 
 
 ### Possible Scenarios 1
@@ -157,10 +168,10 @@ User A wishes to validate if all the resources on a dataset website that claims 
 
 
 How to use this tool suite:
-1.  Run `$ python src/command.py buildprofile` to build the profile in JSON Schemas
-2.  Add `--sitemap_convert` to the validation command will extract all URLs from the sitemap, `--staticJSONLD` will extract all the static JSON-LD metadata from the URLs. Run `python src/command.py validate --target_data=[pathToSitemap] --staticJSONLD --sitemap_convert`, each URL in the the sitemap will be visited, its metadata extracted and validated, the reports will be shown in the terminal
+1.  Run `$ python command.py buildprofile` to build the profile in JSON Schemas
+2.  Add `--sitemap_convert` to the validation command will extract all URLs from the sitemap, `--staticJSONLD` will extract all the static JSON-LD metadata from the URLs. Run `python command.py validate --target_data=[pathToSitemap] --staticJSONLD --sitemap_convert`, each URL in the the sitemap will be visited, its metadata extracted and validated, the reports will be shown in the terminal
 4.  User A thinks the detailed results are very long so he decided to read the shortened version instead: 
-    `$ python src/command.py validate --target_data=[pathToSitemap] --staticJSONLD --sitemap_convert --csv="all"`
+    `$ python command.py validate --target_data=[pathToSitemap] --staticJSONLD --sitemap_convert --csv="all"`
      Instead of the detailed report, a csv file is created with the marginality of the metadata reported.
 
  
@@ -176,6 +187,12 @@ How to use this tool suite:
 3.  The tool suite currently has no way to extract dynamically generated metadata, other tools must be used such as BMUSE
 3.  Assume BMUSE was used to extract metadata, run `python3 command.py validate [pathToMetadata] --convert`. The metadata extracted will be converted to JSON-LD and validated
 
+### Run the web application
+
+To start the web application locally, run
+```
+streamlit run website_st.py
+```
 
 ### FAQ
 
